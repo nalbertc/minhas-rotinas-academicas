@@ -8,7 +8,7 @@ interface TextProp extends TextProps {
 
 export function Text({ children, type = "primary", className, size = "md", ...rest }: TextProp) {
   return (
-    <TextComponent className={clsx("", {
+    <TextComponent className={clsx("font-regular", {
       "text-base": size === "sm",
       "text-lg": size === "md",
       "text-xl": size === "lg",

@@ -1,19 +1,24 @@
-import { Bell } from "lucide-react-native";
+import BottomSheet from "@gorhom/bottom-sheet";
+import {
+  useNavigation,
+} from '@react-navigation/native';
+import { Bell, Plus } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
-import { useState } from "react";
-import { RefreshControl, ScrollView, Switch, TouchableOpacity, View } from 'react-native';
+import { useRef, useState } from "react";
+import { Image, RefreshControl, ScrollView, Text as TextComp, TouchableOpacity, View } from 'react-native';
 import {
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
 import { Heading } from "../components/Heading";
 import { Text } from "../components/Text";
 import { useProfile } from '../hooks/useprofile';
+import { getInitials } from "./ProfileScreen";
 
 export function HomeScreen() {
+  const [open, setOpen] = useState(false);
   const { profile } = useProfile()
   const { colorScheme, toggleColorScheme } = useColorScheme();
-  const insets =
-    useSafeAreaInsets();
+  const insets = useSafeAreaInsets();
 
   const [refreshing, setRefreshing] =
     useState(false);
@@ -35,27 +40,35 @@ export function HomeScreen() {
     }
   }
 
+  const bottomSheetRef =
+    useRef<BottomSheet>(
+      null
+    );
+
+  const navigation =
+    useNavigation();
+
   return (
     <ScrollView
-
       refreshControl={
         <RefreshControl
-          refreshing={
-            refreshing
-          }
-          onRefresh={
-            onRefresh
-          }
-        />
-      }
-
-      className="flex-1  bg-backgroundLight dark:bg-backgroundDark" style={{ paddingTop: insets.top }}>
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+        />} className=" bg-backgroundLight dark:bg-backgroundDark relative" style={{ paddingTop: insets.top }} contentContainerStyle={{
+          flexGrow: 1,
+        }}>
 
       <View className="h-20 w-full items-center justify-between px-6 flex-row">
 
         <View className="flex-row gap-4">
 
-          <View className="bg-primary h-14 w-14 rounded-full"></View>
+          <View className="h-14 w-14 rounded-full overflow-hidden">
+            {profile?.imageUrl ? <Image className="flex-1 " source={{
+              uri: profile.imageUrl
+            }} /> : <View className="bg-primary flex-1 items-center justify-center">
+              <TextComp className="text-white font-regular text-3xl items-center justify-center">{getInitials(profile?.nome!)}</TextComp>
+            </View>}
+          </View>
 
           <View >
             <Text type="secondary">Olá!</Text>
@@ -72,10 +85,21 @@ export function HomeScreen() {
 
       </View>
 
-      <View>
+      <View className=" flex-1 relative">
 
 
-        <Switch value={colorScheme === "dark"} onChange={toggleColorScheme} />
+
+
+
+
+        <TouchableOpacity activeOpacity={0.7} className="bg-primary rounded-full p-4 absolute bottom-28 right-6"
+          onPress={() => {
+            navigation.navigate('AddMenu')
+          }}
+        >
+          <Plus size={32} color="#fff" />
+        </TouchableOpacity>
+
       </View>
 
 

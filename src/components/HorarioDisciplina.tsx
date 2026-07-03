@@ -2,7 +2,7 @@ import { Check } from "lucide-react-native"
 import { useColorScheme } from "nativewind"
 import { TouchableOpacity, View } from "react-native"
 import { useSharedValue } from "react-native-reanimated"
-import { HORARIO } from "../screens/DisciplinaScreen"
+import { HORARIO } from "../screens/DisciplinasScreen"
 import { IconTipoAtividade } from "./IconTipoAtividade"
 import { Text } from "./Text"
 

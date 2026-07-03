@@ -3,7 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import clsx from 'clsx';
 import { Calendar, ChevronDown, ChevronLeft } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Alert, Dimensions, Platform, ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 import {
@@ -12,14 +12,14 @@ import {
 import { Button } from "../components/Button";
 import { Heading } from "../components/Heading";
 import { Input } from "../components/Input";
-import { ModalComponent } from '../components/Modal';
+import { ModalComponent } from '../components/Modal copy';
 import { PRIORIDADE, PrioridadeAtividade } from '../components/PrioridadeAtividade';
 import { Sheet } from '../components/Sheet';
 import { STATUS, StatusAtividade } from '../components/StatusAtividade';
 import { Text } from "../components/Text";
 import { TipoAtividade, TIPOS } from '../components/TipoAtividade';
 import { createAtividade } from '../services/atividades';
-import { Disciplina } from '../services/disciplinas';
+import { Disciplina, getDisciplinas } from '../services/disciplinas';
 
 export function formatDate(value?: Date) {
   if (!value)
@@ -86,37 +86,14 @@ export function AdicionarAtividadeScreen() {
 
   async function handleCreate() {
     try {
+      const invalid = !titulo || !date || !prioridade || !tipo || !disciplina?.id;
 
-      const invalid =
-        !titulo ||
-        !date ||
-        !prioridade ||
-        !tipo ||
-        !disciplina?.id;
-
-      if (
-        invalid
-      ) {
-
-        setTituloIsValid(
-          !!titulo
-        );
-
-        setDateIsValid(
-          !!date
-        );
-
-        setPrioridadeIsValid(
-          !!prioridade
-        );
-
-        setTipoIsValid(
-          !!tipo
-        );
-
-        setDisciplinaIsValid(
-          !!disciplina?.id
-        );
+      if (invalid) {
+        setTituloIsValid(!!titulo);
+        setDateIsValid(!!date);
+        setPrioridadeIsValid(!!prioridade);
+        setTipoIsValid(!!tipo);
+        setDisciplinaIsValid(!!disciplina?.id);
 
         Alert.alert(
           "Campos obrigatórios",
@@ -127,48 +104,31 @@ export function AdicionarAtividadeScreen() {
       }
 
       await createAtividade({
-
         titulo,
-
         descricao,
-
         status,
-
         prioridade,
-
         tipo,
-
-        data_entrega:
-          formatDateToDB(date),
-
-        disciplina_id:
-          disciplina.id,
+        data_entrega: formatDateToDB(date),
+        disciplina_id: disciplina.id,
       });
 
       Alert.alert(
         "Sucesso",
-
         "Atividade criada com sucesso!",
-
         [
           {
             text:
               "OK",
-
             onPress:
               () =>
-                navigation.navigate("Atividade"),
+                navigation.goBack(),
           },
         ]
       );
 
-    } catch (
-    error
-    ) {
-
-      console.log("Erro",
-        error
-      );
+    } catch (error) {
+      console.log("Erro", error);
 
       Alert.alert(
         "Erro",
@@ -177,46 +137,49 @@ export function AdicionarAtividadeScreen() {
     }
   }
 
+  const [disciplinas, setDisciplinas,] = useState<Disciplina[]>([]);
+  const [searchDisciplinas, setSearchDisciplinas,] = useState("");
+  const [loading, setLoading,] = useState(false);
 
+  const filteredDisciplinas = searchDisciplinas.trim().length > 0 ? disciplinas.filter(disc => disc.nome.toLocaleLowerCase().includes(searchDisciplinas.toLowerCase())) : []
+
+  async function loadData() {
+    setLoading(true);
+
+    const response = await getDisciplinas();
+
+    setDisciplinas(response);
+
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    loadData();
+  }, []);
 
   const DIMENSIONS = Dimensions.get("window")
 
   const width = (DIMENSIONS.width - 48) / 2
+  const MAX_HEIGHT =
+    DIMENSIONS.height
+    * 0.6;
 
   return (
     <View className="flex-1 bg-backgroundLight dark:bg-backgroundDark" style={{ paddingTop: insets.top }}>
 
       <KeyboardAvoidingView
-
         style={{
           flex: 1
         }}
-
-        behavior={
-          Platform.OS ===
-            "ios"
-            ?
-            "padding"
-            :
-            "height"
-        }
-
-        keyboardVerticalOffset={
-          insets.top
-        }
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={insets.top}
       >
         <ScrollView
-
           contentContainerStyle={{
             flexGrow: 1
           }}
-
           keyboardShouldPersistTaps="handled"
-
-          showsVerticalScrollIndicator={
-            false
-          }
-
+          showsVerticalScrollIndicator={false}
         >
 
           <View className="h-20 items-center justify-between px-6 flex-row">
@@ -366,7 +329,60 @@ export function AdicionarAtividadeScreen() {
                 </View>
               </View>
 
-              <ModalComponent disciplina={disciplina} setDisciplina={setDisciplina} isModalVisible={isModalVisibleModal} setModalVisible={setModalVisibleModal} />
+              <ModalComponent showClose isModalVisible={isModalVisibleModal} setModalVisible={setModalVisibleModal} title='Selecione a disciplina' >
+                <View className='gap-4'>
+                  <Input placeholder='Buscar disciplina...'
+                    value={searchDisciplinas}
+                    onChangeText={setSearchDisciplinas} />
+
+                  <ScrollView style={{
+
+                    maxHeight: MAX_HEIGHT
+                  }} >
+
+                    <View className='gap-2'>
+
+                      {searchDisciplinas.length > 0 ?
+                        filteredDisciplinas.map((disc) => (
+
+                          <TouchableOpacity key={disc.id} className="min-h-12 flex-row justify-between items-center bg-background rounded-2xl px-2 bg-primary/15 py-1"
+                            onPress={() => {
+                              setDisciplina(disc)
+                              setModalVisibleModal(false)
+
+                            }}
+                          >
+                            <View className="flex-row gap-3">
+                              <View className='flex-row gap-6'>
+                                <Text className=''>
+                                  {disc.nome}
+                                </Text>
+                              </View>
+
+                            </View>
+                          </TouchableOpacity>))
+                        :
+                        disciplinas.map((disc) => (
+                          <TouchableOpacity key={disc.id} className="min-h-12 flex-row justify-between items-center bg-background rounded-2xl px-2 bg-primary/15 py-1"
+                            onPress={() => {
+                              setModalVisibleModal(false)
+                              setDisciplina(disc)
+                            }}
+                          >
+                            <View className="flex-row gap-3">
+                              <View className='flex-row gap-6'>
+                                <Text className=''>
+                                  {disc.nome}
+                                </Text>
+                              </View>
+
+                            </View>
+                          </TouchableOpacity>))
+                      }
+                    </View>
+                  </ScrollView>
+                </View>
+              </ModalComponent>
             </View>
 
             <Button onPress={() => {
@@ -375,9 +391,7 @@ export function AdicionarAtividadeScreen() {
               setPrioridadeIsValid(prioridade === "" ? false : true)
               setTipoIsValid(tipo === "" ? false : true)
               setDisciplinaIsValid(!disciplina.id ? false : true)
-
               handleCreate()
-
             }}  >Salvar Atividade</Button>
           </View>
 

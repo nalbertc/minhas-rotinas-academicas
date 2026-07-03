@@ -18,7 +18,7 @@ import { Input } from "../components/Input";
 import { Sheet } from '../components/Sheet';
 import { Text } from "../components/Text";
 import { createDisciplina } from '../services/disciplinas';
-import { HORARIO } from './DisciplinaScreen';
+import { HORARIO } from './DisciplinasScreen';
 
 export function formatDate(value?: Date) {
   if (!value)

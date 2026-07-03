@@ -226,7 +226,7 @@ export function EditarPerfilScreen({ }: EditPerfilProps) {
 
       </View>
 
-      <View className="px-6 flex-1 gap-6">
+      <View className="px-4 flex-1 gap-6">
 
         <View className="items-center">
           <View className="bg-primary/60 w-48 h-48 rounded-full relative border border-primary">

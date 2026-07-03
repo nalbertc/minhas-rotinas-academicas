@@ -6,6 +6,7 @@ import {
 import Svg, { Circle } from "react-native-svg";
 import { Heading } from "../components/Heading";
 import { Text } from "../components/Text";
+import { atualizarAtividadesAtrasadas } from "../services/atividades";
 import { Disciplina, getDisciplinas } from "../services/disciplinas";
 
 export const HORARIO = [
@@ -36,6 +37,7 @@ export function DisciplinaScreen() {
 
   async function loadData() {
     setLoading(true);
+    await atualizarAtividadesAtrasadas()
 
     const response = await getDisciplinas();
 
@@ -47,11 +49,6 @@ export function DisciplinaScreen() {
     loadData();
   }, []);
 
-
-
-
-
-
   return (
     <View className="flex-1  bg-backgroundLight dark:bg-backgroundDark" style={{ paddingTop: insets.top }}>
 
@@ -61,7 +58,7 @@ export function DisciplinaScreen() {
         </Heading>
       </View>
 
-      <View className="px-6 ">
+      <View className="px-4">
         <FlatList
           data={disciplinas}
           keyExtractor={(item) => item.id}
@@ -133,26 +130,14 @@ export function MiniChart({ current, total }: MiniChartProps) {
 
   const color = "#7453F9"
 
-  const backgroundColor =
-    "#E5E5E5"
-  const radius =
-    (size -
-      strokeWidth)
-    / 2;
+  const backgroundColor = "#E5E5E5"
+  const radius = (size - strokeWidth) / 2;
 
-  const circumference =
-    2 *
-    Math.PI *
-    radius;
+  const circumference = 2 * Math.PI * radius;
 
-  const progress =
-    current /
-    total;
+  const progress = total !== 0 ? current / total : 0;
 
-  const offset =
-    circumference *
-    (1 -
-      progress);
+  const offset = circumference * (1 - progress);
 
   return (
     <View className="items-center relative gap-1">

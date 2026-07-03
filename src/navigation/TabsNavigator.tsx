@@ -5,8 +5,8 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { BookOpen, Calendar, ClipboardList, Home, User } from 'lucide-react-native';
 
-import { AtividadeScreen } from '../screens/AticidadeScreen';
-import { DisciplinaScreen } from '../screens/DisciplinaScreen';
+import { AtividadeScreen } from '../screens/AticidadesScreen';
+import { DisciplinaScreen } from '../screens/DisciplinasScreen';
 import { HomeScreen } from '../screens/HomeScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 

@@ -9,15 +9,18 @@ import {
   useFonts,
 } from "@expo-google-fonts/poppins";
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import * as SplashScreen from 'expo-splash-screen';
 import { useColorScheme } from 'nativewind';
+import { useEffect } from 'react';
 import { StatusBar } from "react-native";
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { PaperProvider } from 'react-native-paper';
+import { Toaster } from 'sonner-native';
 import { Loading } from './src/components/Loading';
 import { AuthProvider } from "./src/contexts/AuthContext";
 import { RootNavigator } from "./src/navigation/RootNavigator";
 
-
+SplashScreen.preventAutoHideAsync();
 
 export default function App() {
   const { colorScheme, toggleColorScheme } = useColorScheme();
@@ -28,11 +31,19 @@ export default function App() {
     Poppins_700Bold,
   });
 
+  useEffect(() => {
+    if (fontsLoaded) {
+      // Esconde o splash screen explicitamente
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
   if (!fontsLoaded) {
     return <Loading />;
   }
 
   return (
+
     <GestureHandlerRootView style={{ flex: 1 }}>
       <BottomSheetModalProvider>
         <KeyboardProvider>
@@ -47,6 +58,14 @@ export default function App() {
         </KeyboardProvider>
       </BottomSheetModalProvider>
       <StatusBar barStyle={colorScheme === "light" ? "dark-content" : "light-content"} backgroundColor="transparent" translucent />
+      <Toaster
+        richColors
+        theme={
+          colorScheme === "dark"
+            ? "dark"
+            : "light"
+        }
+      />
     </GestureHandlerRootView>
 
   );

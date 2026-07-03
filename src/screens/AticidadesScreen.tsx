@@ -4,17 +4,28 @@ import {
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
 import { Text } from "../components/Text";
-import { Atividades, getAtividadess } from "../services/atividades";
+import { Atividades, atualizarAtividadesAtrasadas, getAtividadess } from "../services/atividades";
 
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import clsx from "clsx";
 import { useColorScheme } from "nativewind";
 import { Heading } from "../components/Heading";
 import { IconTipoAtividade } from "../components/IconTipoAtividade";
 import { Input } from "../components/Input";
 import { STATUS } from "../components/StatusAtividade";
+import { RootStackParamList } from "../navigation/AppNavigator";
+
+export type NavigationProps =
+  NativeStackNavigationProp<
+    RootStackParamList
+  >;
 
 export function AtividadeScreen() {
-
+  const navigation =
+    useNavigation<
+      NavigationProps
+    >();
   const insets = useSafeAreaInsets();
   const { colorScheme, toggleColorScheme } = useColorScheme();
 
@@ -55,8 +66,9 @@ export function AtividadeScreen() {
   async function loadData() {
     setLoading(true);
 
-    const response =
-      await getAtividadess();
+    await atualizarAtividadesAtrasadas()
+
+    const response = await getAtividadess();
 
     setAtividades(response);
 
@@ -71,7 +83,7 @@ export function AtividadeScreen() {
 
     <View className="flex-1  bg-backgroundLight dark:bg-backgroundDark" style={{ paddingTop: insets.top }}>
 
-      <View className="h-20 items-center justify-center px-6">
+      <View className="h-20 items-center justify-center px-4">
 
         <Heading >
           Atividades
@@ -81,7 +93,7 @@ export function AtividadeScreen() {
 
       <View className="gap-4 mb-4">
 
-        <View className="px-6">
+        <View className="px-4">
           <Input value={searchAtividades}
 
             placeholder="Buscar atividade..."
@@ -95,7 +107,7 @@ export function AtividadeScreen() {
           showsHorizontalScrollIndicator={false}
         >
 
-          <View className="h-full flex-row gap-4 w-full px-6">
+          <View className="h-full flex-row gap-4 w-full px-4">
 
             <TouchableOpacity className={clsx(" rounded-xl items-center justify-center px-4 ", {
               "bg-primary": filterAtividades === "",
@@ -143,55 +155,56 @@ export function AtividadeScreen() {
         refreshing={loading}
         onRefresh={loadData}
         renderItem={({ item }) => (
-          <>
-            <View
-              className={clsx(`px-4 py-4 rounded-2xl mb-3 mx-6`,
-                {
-                  "bg-[#A9C0E2] dark:bg-[#1E2A4A] border-[#094BAC]": item.status === "em_andamento",
-                  "bg-[#bfebd2] dark:bg-[#1E3A2A] border-[#34AF68]": item.status === "concluida",
-                  "bg-[#FFF2C5] dark:bg-[#3A371E] border-[#E4B926]": item.status === "pendente",
-                  "bg-[#F3A9A9] dark:bg-[#3A1E1E] border-[#FF5757]": item.status === "atrasada",
-                }
-              )}
-            >
-              <View className="">
-                <View className="flex-row justify-between gap-2">
-                  <Text type="secondary" size="sm"
-                    numberOfLines={1}
-                    style={{
-                      flexShrink: 1
-                    }}
-                  >
-                    {item.disciplina.nome}
-                  </Text>
-                  <IconTipoAtividade tipo={item.tipo} />
-                </View>
-
-                <Text className="font-semibold">
-                  {item.titulo}
+          <TouchableOpacity
+            className={clsx(`px-4 py-4 rounded-2xl mb-3 mx-4`,
+              {
+                "bg-emAndamentoCard dark:bg-emAndamentoCardDark border-emAndamento": item.status === "em_andamento",
+                "bg-concluidaCard dark:bg-concluidaCardDark border-concluida": item.status === "concluida",
+                "bg-pendenteCard dark:bg-pendenteCardDark border-pendente": item.status === "pendente",
+                "bg-atrasadaCard dark:bg-atrasadaCardDark border-atrasada": item.status === "atrasada",
+              }
+            )}
+            activeOpacity={0.9}
+            onPress={() => {
+              navigation.navigate("AtividadeMenu", { id: item.id })
+            }}
+          >
+            <View className="">
+              <View className="flex-row justify-between gap-2">
+                <Text type="secondary" size="sm"
+                  numberOfLines={1}
+                  style={{
+                    flexShrink: 1
+                  }}
+                >
+                  {item.disciplina.nome}
                 </Text>
+                <IconTipoAtividade tipo={item.tipo} />
+              </View>
+
+              <Text className="font-semibold">
+                {item.titulo}
+              </Text>
 
 
-                <View className="flex-row justify-between">
+              <View className="flex-row justify-between">
 
-                  <Text type="secondary">{new Date(item.data_entrega).toLocaleDateString()}</Text>
+                <Text type="secondary">{new Date(item.data_entrega).toLocaleDateString()}</Text>
 
-                  <TextReact className={clsx("font-semibold", {
-                    "text-[#FF5757]": item.status === "atrasada",
-                    "text-[#34AF68]": item.status === "concluida",
-                    "text-[#E4B926]": item.status === "pendente",
-                    "text-[#094BAC]": item.status === "em_andamento",
-                  })}>
+                <TextReact className={clsx("font-semibold text-lg", {
+                  "text-atrasada": item.status === "atrasada",
+                  "text-concluida": item.status === "concluida",
+                  "text-pendente": item.status === "pendente",
+                  "text-emAndamento": item.status === "em_andamento",
+                })}>
 
-                    {item.status === "atrasada" ? "Atrasada" : item.status === "concluida" ? "Concluída" : item.status === "em_andamento" ? "Em andamento" : "Pendente"}
-                  </TextReact>
-
-                </View>
+                  {item.status === "atrasada" ? "Atrasada" : item.status === "concluida" ? "Concluída" : item.status === "em_andamento" ? "Em andamento" : "Pendente"}
+                </TextReact>
 
               </View>
-            </View>
 
-          </>
+            </View>
+          </TouchableOpacity>
         )}
       />
 

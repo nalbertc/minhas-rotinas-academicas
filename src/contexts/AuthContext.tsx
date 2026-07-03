@@ -17,6 +17,8 @@ export interface Profile {
   nome: string;
   email: string;
   imageUrl?: string
+  curso: string
+  ano: string
 }
 
 type AuthContextData = {

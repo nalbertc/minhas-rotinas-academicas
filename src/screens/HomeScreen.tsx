@@ -1,15 +1,16 @@
-import BottomSheet from "@gorhom/bottom-sheet";
 import {
   useNavigation,
 } from '@react-navigation/native';
 import { Bell, Plus } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Image, RefreshControl, ScrollView, Text as TextComp, TouchableOpacity, View } from 'react-native';
 import {
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
+import { Button } from '../components/Button';
 import { Heading } from "../components/Heading";
+import { ModalComponent } from '../components/Modal copy';
 import { Text } from "../components/Text";
 import { useProfile } from '../hooks/useprofile';
 import { getInitials } from "./ProfileScreen";
@@ -19,9 +20,11 @@ export function HomeScreen() {
   const { profile } = useProfile()
   const { colorScheme, toggleColorScheme } = useColorScheme();
   const insets = useSafeAreaInsets();
+  const navigation = useNavigation();
 
-  const [refreshing, setRefreshing] =
-    useState(false);
+  const [isModalVisibleModal, setModalVisibleModal] = useState(false);
+
+  const [refreshing, setRefreshing] = useState(false);
 
   async function onRefresh() {
     setRefreshing(true);
@@ -40,13 +43,6 @@ export function HomeScreen() {
     }
   }
 
-  const bottomSheetRef =
-    useRef<BottomSheet>(
-      null
-    );
-
-  const navigation =
-    useNavigation();
 
   return (
     <ScrollView
@@ -58,7 +54,7 @@ export function HomeScreen() {
           flexGrow: 1,
         }}>
 
-      <View className="h-20 w-full items-center justify-between px-6 flex-row">
+      <View className="h-20 w-full items-center justify-between px-4 flex-row">
 
         <View className="flex-row gap-4">
 
@@ -85,9 +81,13 @@ export function HomeScreen() {
 
       </View>
 
-      <View className=" flex-1 relative">
+      <View className=" flex-1 relative px-4">
 
+        <Button onPress={() => setModalVisibleModal(true)}>Teste</Button>
 
+        <ModalComponent showClose title='Teste' isModalVisible={isModalVisibleModal} setModalVisible={setModalVisibleModal} >
+          <></>
+        </ModalComponent>
 
 
 
@@ -101,6 +101,8 @@ export function HomeScreen() {
         </TouchableOpacity>
 
       </View>
+
+
 
 
 

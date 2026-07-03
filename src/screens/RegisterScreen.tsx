@@ -15,6 +15,7 @@ import { Button } from '../components/Button';
 import { Input } from '../components/Input';
 import { Text } from '../components/Text';
 import { supabase } from '../libs/supabase';
+import { showError, showSuccess } from '../utils/toast';
 
 type NavigationProps = NativeStackNavigationProp<AuthStackParamList>;
 
@@ -67,13 +68,14 @@ export function RegisterScreen() {
         });
 
       if (authError) {
-        Alert.alert('Erro', authError.message);
+
+        showError(authError.message)
 
         return;
       }
 
       if (!authData.user) {
-        Alert.alert('Erro', 'Usuário não criado');
+        showError('Usuário não criado')
 
         return;
       }
@@ -101,46 +103,19 @@ export function RegisterScreen() {
         return;
       }
 
-      // encerra sessão criada automaticamente
-      // await supabase.auth.signOut();
-
-      Alert.alert(
-        'Sucesso',
-        'Conta criada. Faça login para continuar.',
-        // [
-        //   {
-        //     text:
-        //       'Ir para login',
-
-        //     onPress: () =>
-        //       navigation.navigate('Login')
-        //   },
-        // ]
-      );
-
-    } catch (
-    error
-    ) {
-      console.log(
-        error
-      );
-
-      Alert.alert(
-        'Erro',
-        'Não foi possível cadastrar'
-      );
-
+      showSuccess('Conta criada. Faça login para continuar.')
+    } catch (error) {
+      console.log(error);
+      showError('Não foi possível cadastrar')
     } finally {
-      setLoading(
-        false
-      );
+      setLoading(false);
     }
   }
 
   return (
     <View className="flex-1 bg-backgroundLight dark:bg-backgroundDark" style={{ paddingTop: insets.top }}>
 
-      <View className='h-20 items-center flex-row justify-between px-6'>
+      <View className='h-20 items-center flex-row justify-between px-4'>
         <View className='w-1/6 h-full justify-center'>
           <TouchableOpacity
             className='px-1'
@@ -171,7 +146,10 @@ export function RegisterScreen() {
             <TextReact className={clsx('font-regular', {
               "text-primary ": currentStep === 1,
               "dark:text-gray-600 text-gray-400": currentStep !== 1,
-            })}>Dados pessoais</TextReact>
+            })} numberOfLines={1}
+              style={{
+                flexShrink: 1
+              }}>Dados pessoais</TextReact>
             <View className={clsx('h-2 rounded-full w-full', {
               "bg-primary": currentStep === 1,
               "dark:bg-gray-600 bg-gray-400": currentStep !== 1,
@@ -184,7 +162,10 @@ export function RegisterScreen() {
             <TextReact className={clsx('font-regular', {
               "text-primary ": currentStep === 2,
               "dark:text-gray-600 text-gray-400": currentStep !== 2,
-            })}>Dados acadêmicos</TextReact>
+            })} numberOfLines={1}
+              style={{
+                flexShrink: 1
+              }}>Dados acadêmicos</TextReact>
 
 
             <View className={clsx('h-2 rounded-full w-full', {
@@ -209,7 +190,7 @@ export function RegisterScreen() {
 
         </View>
 
-        <View className='bg-white dark:bg-cardDark w-full rounded-t-2xl px-6 justify-between flex-1 pb-10 py-4'>
+        <View className='bg-white dark:bg-cardDark w-full rounded-t-2xl px-4 justify-between flex-1 pb-10 py-4'>
           <View className=''>
 
             {
@@ -356,7 +337,7 @@ export function RegisterScreen() {
               }
             }}>{currentStep === 3 ? "Cadastrar" : "Avançar"}</Button>
 
-            <Text type='secondary'
+            <Text size='sm' type='secondary'
               className=""
               onPress={() => {
                 navigation.navigate('Login')

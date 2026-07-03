@@ -97,3 +97,83 @@ export async function createAtividade(atividade: CreateAtividadeDTO) {
     throw error;
   }
 }
+
+export async function atualizarAtividadesAtrasadas() {
+  try {
+    const hoje = new Date().toISOString().split("T")[0];
+
+    const { error } = await supabase
+      .from("atividade")
+      .update({
+        status: "atrasada",
+      })
+      .lt("data_entrega", hoje)
+      .neq("status", "concluida");
+
+    if (error) {
+      throw error;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function getAtividadeById(id: string) {
+  try {
+    const { data, error } = await supabase
+      .from("atividade")
+      .select(`*,disciplina (id,nome)`)
+
+      .eq("id", id)
+
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    return data as Atividades;
+  } catch (error) {
+    console.log(error);
+
+    return null;
+  }
+}
+
+export async function updateStatusAtividade(
+  id: string,
+  status: Atividades["status"],
+) {
+  try {
+    const { data, error } = await supabase
+      .from("atividade")
+      .update({ status })
+      .eq("id", id)
+      .select(`*,disciplina (id,nome)`)
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    return data as Atividades;
+  } catch (error) {
+    console.log(error, "Aqui");
+    return null;
+  }
+}
+
+export async function deleteAtividade(id: string) {
+  try {
+    const { error } = await supabase.from("atividade").delete().eq("id", id);
+
+    if (error) {
+      throw error;
+    }
+
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}

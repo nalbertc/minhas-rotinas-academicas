@@ -4,6 +4,7 @@ import React from 'react';
 import { AdicionarAtividadeScreen } from '../screens/AdicionarAtividadeScreen';
 import { AdicionarDisciplinaScreen } from '../screens/AdicionarDisciplinaScreen';
 import { DetalhesAtividadeScreen } from '../screens/DetalhesAtividadeScreen';
+import { DetalheDisciplinaScreen } from '../screens/DetalhesDisciplinaScreen';
 import { EditarPerfilScreen } from '../screens/EditarPerfilScreen';
 import { AdicionarMenuScreen } from '../screens/MenuAdicionarScreen';
 import { MenuAtividadeScreen } from '../screens/MenuAtividadeScreen';
@@ -19,6 +20,9 @@ export type RootStackParamList = {
   AddAtividade: undefined;
   EditProfile: undefined;
   DetalheAtividade: {
+    id: string;
+  };
+  DetalheDisciplina: {
     id: string;
   };
 };
@@ -88,6 +92,13 @@ export function AppNavigator() {
         name="DetalheAtividade"
         component={DetalhesAtividadeScreen}
       />
+
+      <Stack.Screen
+        name="DetalheDisciplina"
+        component={DetalheDisciplinaScreen}
+      />
+
+
 
 
     </Stack.Navigator>

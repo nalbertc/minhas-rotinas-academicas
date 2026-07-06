@@ -9,8 +9,7 @@ interface InputProps extends TextInputProps {
 export function Input({ invalid, ...rest }: InputProps) {
     return (
         <TextInput
-
-            className={clsx("font-regular w-full h-12 rounded-2xl px-4 text-base justify-center border  dark:text-gray-300 text-gray-800", {
+            className={clsx("font-regular w-full h-12 rounded-2xl px-4 text-lg justify-center border  dark:text-gray-300 text-gray-800", {
                 "border-red-500 bg-red-50 dark:bg-red-950 ": invalid,
                 "border-gray-300 dark:border-gray-600 dark:bg-[#242331] bg-gray-100 placeholder:text-gray-400": !invalid,
             })}

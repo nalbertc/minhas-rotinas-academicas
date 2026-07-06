@@ -3,7 +3,6 @@ import { useColorScheme } from "nativewind"
 import { TouchableOpacity, View } from "react-native"
 import { useSharedValue } from "react-native-reanimated"
 import { HORARIO } from "../screens/DisciplinasScreen"
-import { IconTipoAtividade } from "./IconTipoAtividade"
 import { Text } from "./Text"
 
 interface TipoAtividadeProps {
@@ -11,8 +10,6 @@ interface TipoAtividadeProps {
   setTipo: React.Dispatch<React.SetStateAction<"" | "matutino" | "vespertino" | "noturno" | "integral">>,
   onClose: () => void,
 }
-
-
 
 export function HorarioDisciplina({ setTipo, tipoSelected, onClose }: TipoAtividadeProps) {
 
@@ -31,7 +28,7 @@ export function HorarioDisciplina({ setTipo, tipoSelected, onClose }: TipoAtivid
           <TipoAtividades
             key={item.value}
             title={item.title}
-            value={item.value}
+            value={item.value as "matutino" | "vespertino" | "noturno" | "integral"}
             tipoSelected={tipoSelected}
             setTipo={setTipo}
             close={closeSheet}
@@ -67,8 +64,6 @@ export function TipoAtividades({ title, value, tipoSelected, setTipo, close }: S
     >
       <View className="flex-row gap-3">
         <View className='flex-row gap-6'>
-          <IconTipoAtividade tipo={value} />
-
           <Text className='font-semibold'>
             {title}
           </Text>

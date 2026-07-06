@@ -2,11 +2,10 @@ import { Check } from "lucide-react-native"
 import { useColorScheme } from "nativewind"
 import { TouchableOpacity, View } from "react-native"
 import { useSharedValue } from "react-native-reanimated"
-import { IconTipoAtividade } from "./IconTipoAtividade"
 import { Text } from "./Text"
 
 interface TipoAtividadeProps {
-  statusSelected: "pendente" | "em_andamento" | "concluida" | "atrasada",
+  statusSelected: "pendente" | "em_andamento" | "concluida" | "atrasada" | undefined,
   setStatus: React.Dispatch<React.SetStateAction<"pendente" | "em_andamento" | "concluida" | "atrasada">>,
   onClose: () => void,
 }
@@ -46,20 +45,17 @@ export function StatusAtividade({ setStatus, statusSelected, onClose }: TipoAtiv
   return (
     <View className='gap-3'>
 
-      {
-        STATUS.map(
-          item => (
-            <StatusAtividades
-              key={item.value}
-              title={item.title}
-              value={item.value}
-              statusSelected={statusSelected}
-              setStatus={setStatus}
-              close={closeSheet}
-            />
-          )
-        )}
-
+      {STATUS.map(
+        item => (
+          <StatusAtividades
+            key={item.value}
+            title={item.title}
+            value={item.value}
+            statusSelected={statusSelected!}
+            setStatus={setStatus}
+            close={closeSheet}
+          />
+        ))}
 
     </View>
   )
@@ -90,7 +86,6 @@ export function StatusAtividades({ title, value, statusSelected, setStatus, clos
     >
       <View className="flex-row gap-3">
         <View className='flex-row gap-6'>
-          <IconTipoAtividade tipo={value} />
 
           <Text className='font-semibold'>
             {title}

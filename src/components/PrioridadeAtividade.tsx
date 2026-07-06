@@ -2,7 +2,6 @@ import { Check } from "lucide-react-native"
 import { useColorScheme } from "nativewind"
 import { TouchableOpacity, View } from "react-native"
 import { useSharedValue } from "react-native-reanimated"
-import { IconTipoAtividade } from "./IconTipoAtividade"
 import { Text } from "./Text"
 
 interface TipoAtividadeProps {
@@ -99,7 +98,6 @@ export function PrioridadeAtividades({ title, value, tipoSelected, setTipo, clos
     >
       <View className="flex-row gap-3">
         <View className='flex-row gap-6'>
-          <IconTipoAtividade tipo={value} />
 
           <Text className='font-semibold'>
             {title}

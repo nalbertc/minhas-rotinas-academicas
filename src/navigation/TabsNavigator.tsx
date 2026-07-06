@@ -6,6 +6,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { BookOpen, Calendar, ClipboardList, Home, User } from 'lucide-react-native';
 
 import { AtividadeScreen } from '../screens/AticidadesScreen';
+import { CalendarioScreen } from '../screens/CalendarioScreen';
 import { DisciplinaScreen } from '../screens/DisciplinasScreen';
 import { HomeScreen } from '../screens/HomeScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
@@ -87,7 +88,7 @@ export function TabsNavigator() {
 
       <Tab.Screen
         name="Calendario"
-        component={DisciplinaScreen}
+        component={CalendarioScreen}
         options={{
           title: "Calendário",
           tabBarIcon: ({ color, size }) => <Calendar color={color} size={size} />

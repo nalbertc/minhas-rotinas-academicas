@@ -26,6 +26,8 @@ type AuthContextData = {
   session: Session | null;
   profile: Profile | null;
   loading: boolean;
+  refresh: boolean,
+  setRefresh: React.Dispatch<React.SetStateAction<boolean>>,
   refreshProfile: () => Promise<void>;
 };
 
@@ -38,17 +40,12 @@ export function AuthProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [session, setSession] =
-    useState<Session | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
 
-  const [user, setUser] =
-    useState<User | null>(null);
-
-  const [profile, setProfile] =
-    useState<Profile | null>(null);
-
-  const [loading, setLoading] =
-    useState(true);
+  const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [refresh, setRefresh] = useState(true);
 
   async function loadProfile(
     userId: string
@@ -113,6 +110,8 @@ export function AuthProvider({
   return (
     <AuthContext.Provider
       value={{
+        refresh,
+        setRefresh,
         user,
         session,
         profile,

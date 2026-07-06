@@ -18,7 +18,7 @@ import { Input } from "../components/Input";
 import { Sheet } from '../components/Sheet';
 import { Text } from "../components/Text";
 import { createDisciplina } from '../services/disciplinas';
-import { HORARIO } from './DisciplinasScreen';
+import { HORARIO } from '../components/CardDisciplina';
 
 export function formatDate(value?: Date) {
   if (!value)
@@ -186,7 +186,7 @@ export function AdicionarDisciplinaScreen() {
 
         >
 
-          <View className="h-20 items-center justify-between px-6 flex-row">
+          <View className="h-20 items-center justify-between px-4 flex-row">
             <View className="w-1/6 items-start" >
               <TouchableOpacity className="relative bg-white dark:bg-tabsDark p-2 rounded-lg" activeOpacity={0.7} onPress={() => navigation.goBack()}>
                 <ChevronLeft color={colorScheme === "dark" ? "white" : "black"} />
@@ -202,7 +202,7 @@ export function AdicionarDisciplinaScreen() {
 
           </View>
 
-          <View className="flex-1 px-6 pb-10">
+          <View className="flex-1 px-4 pb-10">
             <View className="flex-1 gap-4">
 
               <View className="gap-2" >
@@ -262,7 +262,7 @@ export function AdicionarDisciplinaScreen() {
                     <Text
                       type={dataInicio ? 'primary' : 'secondary'}
                     >
-                      {formatDate(dataInicio)}
+                      {dataInicio ? formatDate(dataInicio) : "Início"}
                     </Text>
 
                     <Calendar
@@ -280,7 +280,7 @@ export function AdicionarDisciplinaScreen() {
                     <Text
                       type={dataFim ? 'primary' : 'secondary'}
                     >
-                      {formatDate(dataFim)}
+                      {dataFim ? formatDate(dataFim) : "Fim"}
                     </Text>
 
                     <Calendar

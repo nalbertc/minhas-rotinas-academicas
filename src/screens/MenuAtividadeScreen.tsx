@@ -10,16 +10,11 @@ import { Heading } from '../components/Heading';
 import { ModalComponent } from '../components/Modal copy';
 import { Text } from '../components/Text';
 import { RootStackParamList } from '../navigation/AppNavigator';
-import { Atividades, atualizarAtividadesAtrasadas, deleteAtividade, getAtividadeById, updateStatusAtividade } from '../services/atividades';
+import { Atividade, atualizarAtividadesAtrasadas, deleteAtividade, getAtividadeById, updateStatusAtividade } from '../services/atividades';
 import { showError, showSuccess } from '../utils/toast';
 import { NavigationProps } from './AticidadesScreen';
 
-
-type RouteProps =
-  RouteProp<
-    RootStackParamList,
-    'AtividadeMenu'
-  >;
+export type RouteProps = RouteProp<RootStackParamList, 'AtividadeMenu'>;
 
 export function MenuAtividadeScreen() {
   const route = useRoute<RouteProps>();
@@ -27,7 +22,7 @@ export function MenuAtividadeScreen() {
   const { colorScheme, toggleColorScheme } = useColorScheme();
   const navigation = useNavigation<NavigationProps>();
 
-  const [atividade, setAtividade] = useState<Atividades | null>();
+  const [atividade, setAtividade] = useState<Atividade | null>();
   const [modalExcluirAtividade, setExcluirAtividade] = useState(false);
 
   const [loading, setLoading,] = useState(false);
@@ -61,129 +56,116 @@ export function MenuAtividadeScreen() {
 
       <View className="bg-white dark:bg-cardDark rounded-t-3xl px-6 py-6 gap-4 pb-14">
 
-        {
-          !loading ? <>
-            <View>
-              <Heading size='sm' >
-                {atividade?.titulo}
-              </Heading>
+        {!loading ? <>
+          <View>
+            <Heading size='sm' >
+              {atividade?.titulo}
+            </Heading>
 
-              <Text type='secondary'>{atividade?.disciplina.nome}</Text>
+            <Text type='secondary'>{atividade?.disciplina.nome}</Text>
 
-              <View className="flex-row justify-between">
+            <View className="flex-row justify-between">
 
-                <Text type="secondary">{new Date(atividade?.data_entrega!).toLocaleDateString()}</Text>
+              <Text type="secondary">{new Date(atividade?.data_entrega!).toLocaleDateString()}</Text>
 
-                <TextReact className={clsx("font-semibold text-lg", {
-                  "text-atrasada": atividade?.status === "atrasada",
-                  "text-concluida": atividade?.status === "concluida",
-                  "text-pendente": atividade?.status === "pendente",
-                  "text-emAndamento": atividade?.status === "em_andamento",
-                })}>
+              <TextReact className={clsx("font-semibold text-lg", {
+                "text-atrasada": atividade?.status === "atrasada",
+                "text-concluida": atividade?.status === "concluida",
+                "text-pendente": atividade?.status === "pendente",
+                "text-emAndamento": atividade?.status === "em_andamento",
+              })}>
 
-                  {atividade?.status === "atrasada" ? "Atrasada" : atividade?.status === "concluida" ? "Concluída" : atividade?.status === "em_andamento" ? "Em andamento" : "Pendente"}
-                </TextReact>
+                {atividade?.status === "atrasada" ? "Atrasada" : atividade?.status === "concluida" ? "Concluída" : atividade?.status === "em_andamento" ? "Em andamento" : "Pendente"}
+              </TextReact>
 
-              </View>
             </View>
+          </View>
 
-            <View className=' gap-3'>
-              {
-                atividade?.status !== "concluida" ?
-                  <TouchableOpacity className="flex-row justify-between items-center bg-background rounded-2xl px-6 bg-primary/15 h-14 "
-                    onPress={async () => {
-                      const result = await updateStatusAtividade(
-                        atividade?.id!, "concluida");
+          <View className=' gap-3'>
+            <TouchableOpacity className="flex-row justify-between items-center bg-background rounded-2xl px-6 bg-primary/15 h-14 "
+              onPress={() => {
+                navigation.goBack();
+                navigation.navigate("DetalheAtividade", { id })
+              }}
+            >
+              <Text className='font-semibold'>
+                Mostrar detalhes
+              </Text>
 
-                      if (result) {
-                        showSuccess("Atividade marcada como concluída!");
+              <ChevronRight color={colorScheme === "dark" ? "#fff" : "#000"} />
 
-                        setAtualizacaoAtividade(!atualizacaoAtividade)
+            </TouchableOpacity>
 
-                      } else {
-                        showError("Não foi possível atualizar a atividade.");
-                      }
-                    }}
-                  >
+            {
+              atividade?.status !== "concluida" ?
+                <TouchableOpacity className="flex-row justify-between items-center bg-background rounded-2xl px-6 bg-primary/15 h-14 "
+                  onPress={async () => {
+                    const result = await updateStatusAtividade(
+                      atividade?.id!, "concluida");
 
-                    <Text className='font-semibold'>
-                      Marcar como concluída
-                    </Text>
+                    if (result) {
+                      showSuccess("Atividade marcada como concluída!");
 
-                  </TouchableOpacity>
-                  : <></>
-              }
+                      setAtualizacaoAtividade(!atualizacaoAtividade)
 
+                    } else {
+                      showError("Não foi possível atualizar a atividade.");
+                    }
+                  }}
+                >
 
-              <TouchableOpacity className="flex-row justify-between items-center bg-background rounded-2xl px-6 bg-primary/15 h-14 "
-                onPress={() => {
-                  navigation.goBack();
-                  navigation.navigate("DetalheAtividade", { id })
-                }}
-              >
+                  <Text className='font-semibold'>
+                    Marcar como concluída
+                  </Text>
 
+                </TouchableOpacity>
+                : <></>
+            }
 
+            <TouchableOpacity className="flex-row justify-between items-center bg-background rounded-2xl px-6 bg-primary/15 h-14 "
+              onPress={() => {
+                setExcluirAtividade(true)
 
-
-                <Text className='font-semibold'>
-                  Mostrar detalhes
-                </Text>
-
-
-
-
-                <ChevronRight color={colorScheme === "dark" ? "#fff" : "#000"} />
-
-              </TouchableOpacity>
-
-              <TouchableOpacity className="flex-row justify-between items-center bg-background rounded-2xl px-6 bg-primary/15 h-14 "
-                onPress={() => {
-
-                  setExcluirAtividade(true)
-
-                  // navigation.goBack();
-                  // navigation.navigate('AtividadeMenu');
+                // navigation.goBack();
+                // navigation.navigate('AtividadeMenu');
+              }}
+            >
+              <Text className='font-semibold'>
+                Excluir atividade
+              </Text>
+            </TouchableOpacity>
 
 
+            <ModalComponent title='Excluir atividade' isModalVisible={modalExcluirAtividade} setModalVisible={setExcluirAtividade} >
+              <Text>Tem certeza que deseja excluir a atividade?</Text>
 
-                }}
-              >
-                <Text className='font-semibold'>
-                  Excluir atividade
-                </Text>
-              </TouchableOpacity>
-
-
-              <ModalComponent title='Excluir atividade' isModalVisible={modalExcluirAtividade} setModalVisible={setExcluirAtividade} >
-                <Text>Tem certeza que deseja excluir a atividade?</Text>
-
-                <View className='flex-row gap-4 mt-6'>
-                  <View className='flex-1'>
-                    <Button onPress={() => setExcluirAtividade(false)} type='secondary'>Cancelar</Button>
-                  </View>
-                  <View className='flex-1'>
-                    <Button type='delete' onPress={async () => {
-
-                      setExcluirAtividade(false)
-                      try {
-                        await deleteAtividade(id);
-                        setAtualizacaoAtividade(!atualizacaoAtividade)
-
-                        showSuccess("Atividade excluída com sucesso!");
-                        navigation.goBack();
-                      } catch (error) {
-                        console.error(error);
-                        showError("Não foi possível excluir a atividade.");
-                      }
-
-                    }} >Confirmar</Button>
-                  </View>
+              <View className='flex-row gap-4 mt-6'>
+                <View className='flex-1'>
+                  <Button onPress={() => setExcluirAtividade(false)} type='secondary'>Cancelar</Button>
                 </View>
-              </ModalComponent>
+                <View className='flex-1'>
+                  <Button type='delete' onPress={async () => {
+
+                    setExcluirAtividade(false)
+                    try {
+                      await deleteAtividade(id);
+                      setAtualizacaoAtividade(!atualizacaoAtividade)
+
+                      showSuccess("Atividade excluída com sucesso!");
+                      navigation.goBack();
+                    } catch (error) {
+                      console.error(error);
+                      showError("Não foi possível excluir a atividade.");
+                    }
+
+                  }} >Confirmar</Button>
+                </View>
+              </View>
+            </ModalComponent>
 
 
-            </View>
-          </> : <><ActivityIndicator color="#7453F9" size={32} /></>
+          </View>
+        </> : <><ActivityIndicator color="#7453F9" size={32} /></>
 
         }
       </View>

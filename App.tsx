@@ -16,9 +16,9 @@ import { StatusBar } from "react-native";
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { PaperProvider } from 'react-native-paper';
 import { Toaster } from 'sonner-native';
-import { Loading } from './src/components/Loading';
 import { AuthProvider } from "./src/contexts/AuthContext";
 import { RootNavigator } from "./src/navigation/RootNavigator";
+import { LoadingScreen } from './src/screens/LoadingScreen';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -39,7 +39,7 @@ export default function App() {
   }, [fontsLoaded]);
 
   if (!fontsLoaded) {
-    return <Loading />;
+    return <LoadingScreen />;
   }
 
   return (

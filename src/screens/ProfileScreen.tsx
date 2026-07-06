@@ -9,7 +9,7 @@ import { Heading } from '../components/Heading';
 import { Text } from '../components/Text';
 import { useProfile } from '../hooks/useprofile';
 import { supabase } from '../libs/supabase';
-import { Atividades, atualizarAtividadesAtrasadas, getAtividadess } from '../services/atividades';
+import { Atividade, atualizarAtividadesAtrasadas, getAtividadess } from '../services/atividades';
 import { Disciplina, getDisciplinas } from '../services/disciplinas';
 
 export function getInitials(nome?: string) {
@@ -35,7 +35,7 @@ export function ProfileScreen() {
   const navigation = useNavigation()
 
   const [disciplinas, setDisciplinas] = useState<Disciplina[]>([]);
-  const [atividades, setAtividades] = useState<Atividades[]>([]);
+  const [atividades, setAtividades] = useState<Atividade[]>([]);
   const [loading, setLoading,] = useState(false);
 
   async function loadData() {

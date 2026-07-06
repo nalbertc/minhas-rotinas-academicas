@@ -1,5 +1,5 @@
 import { supabase } from "../libs/supabase";
-import { Atividades } from "./atividades";
+import { Atividade } from "./atividades";
 
 export interface Disciplina {
   id: string;
@@ -12,7 +12,7 @@ export interface Disciplina {
   sala: string;
   data_inicio: Date;
   data_fim: Date;
-  atividades: Atividades[];
+  atividade: Atividade[];
 }
 
 export async function getDisciplinas() {
@@ -86,5 +86,27 @@ export async function createDisciplina(data: CreateDisciplinaDTO) {
     console.log(error);
 
     throw error;
+  }
+}
+
+export async function getDisciplinaById(id: string) {
+  try {
+    const { data, error } = await supabase
+      .from("disciplina")
+      .select(`*,atividade(*)`)
+
+      .eq("id", id)
+
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    return data as Disciplina;
+  } catch (error) {
+    console.log(error);
+
+    return null;
   }
 }

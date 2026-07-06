@@ -1,10 +1,14 @@
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator } from "react-native";
 
-export function Loading() {
+interface LoadingProps {
+  size?: number
+}
+
+
+export function Loading({ size = 32 }: LoadingProps) {
   return (
-    <View className="flex-1 bg-backgroundLight dark:bg-backgroundDark  justify-center itens-center ">
-      <ActivityIndicator color="#7453F9" size={42} />
-
-    </View>
+    <ActivityIndicator color="#7453F9" size={size} />
   );
 }
+
+

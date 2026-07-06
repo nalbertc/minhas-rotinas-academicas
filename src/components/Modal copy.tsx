@@ -14,10 +14,7 @@ interface ModalProps {
 }
 
 export function ModalComponent({ isModalVisible, showClose, setModalVisible, children, title }: ModalProps) {
-
   const { colorScheme } = useColorScheme()
-
-
 
   return (
     <View style={{ flex: 1 }} >

@@ -6,9 +6,7 @@ import { useColorScheme } from "nativewind";
 import React, { useEffect, useState } from "react";
 import { Alert, Dimensions, Platform, ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
-import {
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
+import { useSafeAreaInsets, } from 'react-native-safe-area-context';
 import { Button } from "../components/Button";
 import { Heading } from "../components/Heading";
 import { Input } from "../components/Input";
@@ -26,6 +24,22 @@ export function formatDate(value?: Date) {
     return 'Data';
 
   return value.toLocaleDateString('pt-BR');
+}
+
+export function formatDatePiker(value: Date) {
+  if (!value)
+    return 'Data';
+
+  return new Date(value);
+}
+
+export function formatDateForce(value: Date) {
+  if (!value)
+    return new Date().toISOString();
+
+  return value
+    .toISOString()
+    .split("T")[0];
 }
 
 export function formatDateToDB(
@@ -76,6 +90,7 @@ export function AdicionarAtividadeScreen() {
   function toggleSheetPrioridade() {
     setIsOpenPrioridade((prevState) => !prevState)
   }
+
   function toggleSheetStatus() {
     setIsOpenStatus((prevState) => !prevState)
   }
@@ -109,7 +124,7 @@ export function AdicionarAtividadeScreen() {
         status,
         prioridade,
         tipo,
-        data_entrega: formatDateToDB(date),
+        data_entrega: formatDateForce(date),
         disciplina_id: disciplina.id,
       });
 
@@ -182,7 +197,7 @@ export function AdicionarAtividadeScreen() {
           showsVerticalScrollIndicator={false}
         >
 
-          <View className="h-20 items-center justify-between px-6 flex-row">
+          <View className="h-20 items-center justify-between px-4 flex-row">
             <View className="w-1/6 items-start" >
               <TouchableOpacity className="relative bg-white dark:bg-tabsDark p-2 rounded-lg" activeOpacity={0.7} onPress={() => navigation.goBack()}>
                 <ChevronLeft color={colorScheme === "dark" ? "white" : "black"} />
@@ -198,7 +213,7 @@ export function AdicionarAtividadeScreen() {
 
           </View>
 
-          <View className="flex-1 px-6 mb-6">
+          <View className="flex-1 px-4 mb-6">
             <View className="flex-1 gap-4">
 
               <View className="gap-2" >
@@ -223,12 +238,25 @@ export function AdicionarAtividadeScreen() {
                 />
 
               </View>
+              <View className="flex justify-between gap-2">
+                <Text>Disciplina</Text>
+                <TouchableOpacity className={clsx("h-12 rounded-2xl px-4 text-base border  dark:text-gray-300 text-gray-800 flex-row items-center justify-between", {
+                  "border-red-500 bg-red-50 dark:bg-red-950 ": !disciplinaIsValid,
+                  "border-gray-300 dark:border-gray-600 dark:bg-[#242331] bg-gray-100": disciplinaIsValid,
+                })} onPress={toggleModal}>
 
-              <View className="gap-2">
-                <Text>Entrega do trabalho</Text>
+                  <Text type={disciplina ? 'primary' : 'secondary'}>
+                    {!disciplina ? "Selecione a disciplina" : disciplina.nome}
+                  </Text>
 
-                <View className="flex-row gap-2">
-                  <TouchableOpacity className={clsx("flex-1 h-12 rounded-2xl px-4 text-base border  dark:text-gray-300 text-gray-800 flex-row items-center justify-between", {
+                </TouchableOpacity>
+              </View>
+
+              <View className="flex-row gap-2">
+                <View className="flex-1 gap-2">
+                  <Text>Data de entrega</Text>
+
+                  <TouchableOpacity className={clsx("h-12 rounded-2xl px-4 text-base border  dark:text-gray-300 text-gray-800 flex-row items-center justify-between", {
                     "border-red-500 bg-red-50 dark:bg-red-950 ": !dateIsValid,
                     "border-gray-300 dark:border-gray-600 dark:bg-[#242331] bg-gray-100": dateIsValid,
                   })} onPress={() =>
@@ -265,6 +293,10 @@ export function AdicionarAtividadeScreen() {
                       }} />
                   )}
 
+                </View>
+                <View className='flex-1 gap-2'>
+                  <Text>Prioridade</Text>
+
                   <TouchableOpacity
                     style={{ width: width }}
                     className={clsx("h-12 rounded-2xl px-4 text-base border  dark:text-gray-300 text-gray-800 flex-row items-center justify-between", {
@@ -283,11 +315,11 @@ export function AdicionarAtividadeScreen() {
                 </View>
               </View>
 
-              <View className="gap-2">
-                <Text>Caracteristicas do trabalho</Text>
+              <View className="flex-row  gap-2">
 
-                <View className="flex-row justify-between gap-2">
-                  <TouchableOpacity className={clsx("flex-1 h-12 rounded-2xl px-4 text-base border  dark:text-gray-300 text-gray-800 flex-row items-center justify-between border-gray-300 dark:border-gray-600 dark:bg-[#242331] bg-gray-100")}
+                <View className='flex-1 gap-2'>
+                  <Text>Status</Text>
+                  <TouchableOpacity className={clsx(" h-12 rounded-2xl px-4 text-base border  dark:text-gray-300 text-gray-800 flex-row items-center justify-between border-gray-300 dark:border-gray-600 dark:bg-[#242331] bg-gray-100")}
 
                     onPress={toggleSheetStatus}
 
@@ -297,8 +329,10 @@ export function AdicionarAtividadeScreen() {
                     </Text>
 
                   </TouchableOpacity>
-
-                  <TouchableOpacity className={clsx("flex-1 h-12 rounded-2xl px-4 text-base border  dark:text-gray-300 text-gray-800 flex-row items-center justify-between", {
+                </View>
+                <View className='flex-1 gap-2'>
+                  <Text>Tipo</Text>
+                  <TouchableOpacity className={clsx(" h-12 rounded-2xl px-4 text-base border  dark:text-gray-300 text-gray-800 flex-row items-center justify-between", {
                     "border-red-500 bg-red-50 dark:bg-red-950 ": !tipoIsValid,
                     "border-gray-300 dark:border-gray-600 dark:bg-[#242331] bg-gray-100": tipoIsValid,
                   })} onPress={toggleSheetTipo}>
@@ -312,19 +346,6 @@ export function AdicionarAtividadeScreen() {
                     <ChevronDown
                       size={20} color={colorScheme === "dark" ? "#fff" : "#000"}
                     />
-                  </TouchableOpacity>
-                </View>
-
-                <View className="flex-row justify-between gap-2">
-                  <TouchableOpacity className={clsx("flex-1 h-12 rounded-2xl px-4 text-base border  dark:text-gray-300 text-gray-800 flex-row items-center justify-between", {
-                    "border-red-500 bg-red-50 dark:bg-red-950 ": !disciplinaIsValid,
-                    "border-gray-300 dark:border-gray-600 dark:bg-[#242331] bg-gray-100": disciplinaIsValid,
-                  })} onPress={toggleModal}>
-
-                    <Text type={disciplina ? 'primary' : 'secondary'}>
-                      {!disciplina ? "Selecione a disciplina" : disciplina.nome}
-                    </Text>
-
                   </TouchableOpacity>
                 </View>
               </View>
@@ -407,8 +428,8 @@ export function AdicionarAtividadeScreen() {
             <StatusAtividade statusSelected={status} setStatus={setStatus} onClose={toggleSheetStatus} />
           } />}
 
-
-        </ScrollView></KeyboardAvoidingView>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </View>
   );
 }

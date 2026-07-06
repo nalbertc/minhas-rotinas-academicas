@@ -1,6 +1,6 @@
 import { supabase } from "../libs/supabase";
 
-export interface Atividades {
+export interface Atividade {
   id: string;
   titulo: string;
   descricao?: string;
@@ -16,10 +16,21 @@ export interface Atividades {
     | "outro";
   data_entrega: Date;
   created_at: string;
+  prioridade: "alta" | "media" | "baixa";
   disciplina: {
     id: string;
     nome: string;
   };
+}
+
+export interface IUpdateAtividade {
+  titulo?: string;
+  descricao?: string;
+  status?: "pendente" | "em_andamento" | "concluida" | "atrasada";
+  prioridade?: string;
+  tipo?: string;
+  data_entrega?: string;
+  disciplina_id?: string | null;
 }
 
 export async function getAtividadess() {
@@ -35,7 +46,7 @@ export async function getAtividadess() {
       throw error;
     }
 
-    return data as Atividades[];
+    return data as Atividade[];
   } catch (error) {
     console.log(error);
 
@@ -132,7 +143,7 @@ export async function getAtividadeById(id: string) {
       throw error;
     }
 
-    return data as Atividades;
+    return data as Atividade;
   } catch (error) {
     console.log(error);
 
@@ -142,7 +153,7 @@ export async function getAtividadeById(id: string) {
 
 export async function updateStatusAtividade(
   id: string,
-  status: Atividades["status"],
+  status: Atividade["status"],
 ) {
   try {
     const { data, error } = await supabase
@@ -156,7 +167,7 @@ export async function updateStatusAtividade(
       throw error;
     }
 
-    return data as Atividades;
+    return data as Atividade;
   } catch (error) {
     console.log(error, "Aqui");
     return null;
@@ -175,5 +186,41 @@ export async function deleteAtividade(id: string) {
   } catch (error) {
     console.log(error);
     return false;
+  }
+}
+
+export async function updateAtividade(id: string, atividade: IUpdateAtividade) {
+  try {
+    // 1. Verifica se o usuário está autenticado antes de permitir a alteração
+    const { data: userData } = await supabase.auth.getUser();
+
+    if (!userData.user) {
+      throw new Error("Usuário não autenticado");
+    }
+
+    // 2. Executa a atualização filtrando pelo ID da atividade
+    const { data, error } = await supabase
+      .from("atividade")
+      .update({
+        titulo: atividade.titulo,
+        descricao: atividade.descricao,
+        status: atividade.status,
+        prioridade: atividade.prioridade,
+        tipo: atividade.tipo,
+        data_entrega: atividade.data_entrega,
+        disciplina_id: atividade.disciplina_id,
+      })
+      .eq("id", id) // 🔥 Garante que só vai atualizar a atividade com este ID
+      .select()
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    return data; // Retorna a atividade atualizada com os dados novos
+  } catch (error) {
+    console.log("Erro ao atualizar atividade:", error);
+    throw error;
   }
 }

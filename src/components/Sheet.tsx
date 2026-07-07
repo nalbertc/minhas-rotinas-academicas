@@ -56,10 +56,6 @@ export function Sheet({ title, content, onClose }: Props) {
     transform: [{ translateY: offset.value }],
   }))
 
-
-
-
-
   return (
     <>
       <TouchableWithoutFeedback
@@ -67,19 +63,14 @@ export function Sheet({ title, content, onClose }: Props) {
       >
 
         <Animated.View
-
           entering={FadeIn}
-
           exiting={FadeOut}
-
           style={{
             position: 'absolute',
-
             top: 0,
             left: 0,
             right: 0,
             bottom: 0,
-
             backgroundColor:
               colorScheme === 'dark'
                 ? 'rgba(0,0,0,0.55)'
@@ -106,16 +97,7 @@ export function Sheet({ title, content, onClose }: Props) {
 
           <View className="mb-16 px-6  gap-4">
             <Heading >{title}</Heading>
-
-
-
-
-            {
-              content
-            }
-
-
-
+            {content}
           </View>
         </Animated.View>
       </GestureDetector>

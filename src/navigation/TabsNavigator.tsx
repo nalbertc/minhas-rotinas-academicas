@@ -86,14 +86,6 @@ export function TabsNavigator() {
         }}
       />
 
-      <Tab.Screen
-        name="Calendario"
-        component={CalendarioScreen}
-        options={{
-          title: "Calendário",
-          tabBarIcon: ({ color, size }) => <Calendar color={color} size={size} />
-        }}
-      />
 
       <Tab.Screen
         name="Disciplina"
@@ -110,6 +102,14 @@ export function TabsNavigator() {
         options={{
           title: "Atividades",
           tabBarIcon: ({ color, size }) => <ClipboardList color={color} size={size} />
+        }}
+      />
+      <Tab.Screen
+        name="Calendario"
+        component={CalendarioScreen}
+        options={{
+          title: "Calendário",
+          tabBarIcon: ({ color, size }) => <Calendar color={color} size={size} />
         }}
       />
 

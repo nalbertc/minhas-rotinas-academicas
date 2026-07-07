@@ -115,14 +115,11 @@ export function DetalhesAtividadeScreen() {
         tipo
       });
 
-
       showSuccess("Atividade atualizada com sucesso")
       setEditar(false)
-
     } catch (error) {
       console.log("Erro", error);
-
-      showError("Erro ao tentar atualizar")
+      showError("Erro ao atualizar atividade")
     }
   }
 
@@ -168,7 +165,7 @@ export function DetalhesAtividadeScreen() {
       setPrioridade(atividade.prioridade)
       setTipo(atividade.tipo)
       setStatus(atividade.status)
-      // Você também pode inicializar outros campos aqui, ex: setDescricao(atividade.descricao)
+
     }
   }, [atividade]);
 
@@ -204,7 +201,7 @@ export function DetalhesAtividadeScreen() {
         >
 
           <View className="h-20 items-center justify-between px-4 flex-row">
-            <View className="w-1/6 items-start" >
+            <View className=" items-start" >
               <TouchableOpacity className="relative bg-white dark:bg-tabsDark p-2 rounded-lg" activeOpacity={0.7} onPress={() => {
                 if (editar) {
                   setEditar(false)

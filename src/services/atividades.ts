@@ -23,16 +23,6 @@ export interface Atividade {
   };
 }
 
-export interface IUpdateAtividade {
-  titulo?: string;
-  descricao?: string;
-  status?: "pendente" | "em_andamento" | "concluida" | "atrasada";
-  prioridade?: string;
-  tipo?: string;
-  data_entrega?: string;
-  disciplina_id?: string | null;
-}
-
 export async function getAtividadess() {
   try {
     const { data, error } = await supabase
@@ -189,6 +179,16 @@ export async function deleteAtividade(id: string) {
   }
 }
 
+export interface IUpdateAtividade {
+  titulo?: string;
+  descricao?: string;
+  status?: "pendente" | "em_andamento" | "concluida" | "atrasada";
+  prioridade?: string;
+  tipo?: string;
+  data_entrega?: string;
+  disciplina_id?: string | null;
+}
+
 export async function updateAtividade(id: string, atividade: IUpdateAtividade) {
   try {
     // 1. Verifica se o usuário está autenticado antes de permitir a alteração
@@ -210,7 +210,7 @@ export async function updateAtividade(id: string, atividade: IUpdateAtividade) {
         data_entrega: atividade.data_entrega,
         disciplina_id: atividade.disciplina_id,
       })
-      .eq("id", id) // 🔥 Garante que só vai atualizar a atividade com este ID
+      .eq("id", id)
       .select()
       .single();
 

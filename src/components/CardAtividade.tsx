@@ -15,7 +15,7 @@ export function CardAtividade({ item }: CardAtividadeProps) {
   const navigation = useNavigation<NavigationProps>();
   return (
     <TouchableOpacity
-      className={clsx(`px-4 py-4 rounded-2xl mb-3 mx-4`,
+      className={clsx(`px-4 py-4 rounded-2xl mb-3`,
         {
           "bg-emAndamentoCard dark:bg-emAndamentoCardDark border-emAndamento": item.status === "em_andamento",
           "bg-concluidaCard dark:bg-concluidaCardDark border-concluida": item.status === "concluida",

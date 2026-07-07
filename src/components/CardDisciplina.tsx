@@ -30,7 +30,6 @@ export const HORARIO = [
 export function CardDisciplina({ item }: CardDisciplinaProps) {
   const navigation = useNavigation<NavigationProps>();
 
-  console.log(item)
   return (
     <TouchableOpacity className="p-4 dark:bg-cardDark bg-white rounded-xl mb-4" onPress={() => navigation.navigate("DetalheDisciplina", { id: item.id })} activeOpacity={0.7}>
       <Text

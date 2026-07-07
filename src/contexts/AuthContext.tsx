@@ -19,6 +19,7 @@ export interface Profile {
   imageUrl?: string
   curso: string
   ano: string
+  matricula: string
 }
 
 type AuthContextData = {

@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 import { Calendar, ChevronDown, ChevronLeft, EllipsisVertical } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
 import React, { useEffect, useState } from "react";
-import { Alert, Dimensions, Platform, ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Platform, ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
 import {
   KeyboardAvoidingView,
   KeyboardAwareScrollView
@@ -22,8 +22,9 @@ import { Input } from "../components/Input";
 import { ModalComponent } from '../components/Modal copy';
 import { Sheet } from '../components/Sheet';
 import { Text } from "../components/Text";
-import { Disciplina, getDisciplinaById } from '../services/disciplinas';
-import { showError, showSuccess } from '../utils/toast';
+import { deleteDisciplina, Disciplina, getDisciplinaById, updateDisciplina } from '../services/disciplinas';
+import { showError, showInfo, showSuccess } from '../utils/toast';
+import { formatDatePiker } from './DetalhesAtividadeScreen';
 import { LoadingScreen } from './LoadingScreen';
 import { RouteProps } from './MenuAtividadeScreen';
 
@@ -66,81 +67,44 @@ export function DetalheDisciplinaScreen() {
   const route = useRoute<RouteProps>();
   const { id } = route.params
 
-  async function handleCreate() {
+  async function handleUpdate() {
     try {
 
       const invalid =
-        !nome ||
-        !professor ||
-        !sala ||
-        !semestre ||
-        !horario ||
-        !dataInicio ||
-        !dataFim;
+        nome === disciplina?.nome &&
+        descricao === disciplina.descricao &&
+        professor === disciplina.professor &&
+        sala === disciplina.sala &&
+        dataInicio === disciplina.data_inicio &&
+        dataFim === disciplina.data_fim &&
+        semestre === disciplina.semestre &&
+        horario === disciplina.horario
 
       if (invalid) {
-
-        setNomeIsValid(!!nome);
-        setProfessorIsValid(!!professor);
-
-        setSalaIsValid(
-          !!sala
-        );
-
-        setSemestreIsValid(
-          !!semestre
-        );
-
-        setHorarioIsValid(
-          !!horario
-        );
-
-        setdataInicioIsValid(
-          !!dataInicio
-        );
-
-        setdataFimIsValid(
-          !!dataFim
-        );
-
-        Alert.alert(
-          "Campos obrigatórios",
-          "Preencha todos os campos para continuar."
-        );
-
+        showInfo("Altere algum dado para poder editar a atividade")
         return;
       }
 
-      // await createDisciplina({
-      //   nome,
-      //   descricao,
-      //   professor,
-      //   sala,
-      //   semestre,
-      //   horario,
-      //   data_inicio:
-      //     dataInicio,
 
-      //   data_fim:
-      //     dataFim,
-      // });
+      await updateDisciplina(id, {
+        nome,
+        descricao,
+        professor,
+        sala,
+        data_inicio: dayjs(dataInicio).format("YYYY-MM-DD"),
+        data_fim: dayjs(dataFim).format("YYYY-MM-DD"),
+        semestre,
+        horario,
+      });
 
-      Alert.alert(
-        "Sucesso",
-        "Disciplina criada com sucesso!",
-
-      );
+      showSuccess("Disciplina atualizada com sucesso!");
+      setEditar(false)
 
     } catch (error) {
 
-      console.log(
-        error
-      );
+      console.log(error);
 
-      Alert.alert(
-        "Erro",
-        "Não foi possível criar a disciplina."
-      );
+      showError("Erro ao atualizar disciplina.");
     }
   }
 
@@ -173,13 +137,7 @@ export function DetalheDisciplinaScreen() {
       setDataFim(disciplina.data_fim)
       setSemestre(disciplina.semestre)
       sethoraio(disciplina.horario)
-      // setDescricao(atividade.descricao)
-      // setDisciplina(atividade.disciplina)
-      // setDate(atividade.data_entrega)
-      // setPrioridade(atividade.prioridade)
-      // setTipo(atividade.tipo)
-      // setStatus(atividade.status)
-      // Você também pode inicializar outros campos aqui, ex: setDescricao(atividade.descricao)
+
     }
   }, [disciplina]);
 
@@ -356,7 +314,7 @@ export function DetalheDisciplinaScreen() {
 
                   {showTimePikerInicio || showTimePikerFim ? (
                     <DateTimePicker
-                      value={new Date()}
+                      value={showTimePikerInicio ? formatDatePiker(dataInicio) : showTimePikerFim ? formatDatePiker(dataFim) : new Date()}
                       mode="date"
                       display="default"
                       onValueChange={(_, selected) => {
@@ -425,16 +383,20 @@ export function DetalheDisciplinaScreen() {
                 </View>
               </View>
 
-              <View className='gap-2 mt-2'>
-                <Heading size='sm'>Atividades vinculadas</Heading>
-                <View className='gap-2'>
-                  {
-                    disciplina.atividade.map(atv => (
-                      <CardAtividade item={atv} />
-                    ))
-                  }
+              {
+                !editar &&
+
+                <View className='gap-2 mt-4'>
+                  <Heading size='sm'>Atividades vinculadas</Heading>
+                  <View className=''>
+                    {
+                      disciplina.atividades.map(atv => (
+                        <CardAtividade item={atv} key={atv.id} />
+                      ))
+                    }
+                  </View>
                 </View>
-              </View>
+              }
             </View>
 
 
@@ -451,105 +413,96 @@ export function DetalheDisciplinaScreen() {
                     setSemestre(disciplina.semestre)
                     sethoraio(disciplina.horario)
                     setEditar(false)
-                  }}>
-                    Cancelar
-                  </Button>
+                  }}>Cancelar</Button>
 
                   <Button onPress={() => {
-                    setNomeIsValid(nome === "" ? false : true)
-                    setProfessorIsValid(professor === "" ? false : true)
-                    setSalaIsValid(sala === "" ? false : true)
-                    setdataInicioIsValid(dataInicio ? true : false)
-                    setdataFimIsValid(dataFim ? true : false)
-                    setHorarioIsValid(horario === "" ? false : true)
-                    setSemestreIsValid(semestre === "" ? false : true)
-
-                    handleCreate()
-
+                    handleUpdate()
                   }}  >Atualizar disciplina</Button>
                 </> : <></>
               }
             </View>
           </View>
 
-          {options && <Sheet onClose={() => {
-            setOptions(false)
-          }} title="Opções" content={
-
-            <View className="gap-3">
-              <TouchableOpacity className="flex-row justify-between items-center bg-background rounded-2xl px-6 bg-primary/15 h-14 "
-                onPress={() => {
-                  // setTipo(value)
-                  setEditar(true)
-                  setOptions(false)
-                }}
-              >
-                <View className="flex-row gap-3">
-                  <View className='flex-row gap-6'>
-                    <Text className='font-semibold'>
-                      Editar disciplina
-                    </Text>
-                  </View>
-
-                </View>
-
-              </TouchableOpacity>
-
-              <TouchableOpacity className="flex-row justify-between items-center bg-background rounded-2xl px-6 bg-primary/15 h-14 "
-                onPress={() => {
-
-                  setExcluirDisciplina(true)
-                  // setTipo(value)
-                  // close()
-                }}
-              >
-                <View className="flex-row gap-3">
-                  <View className='flex-row gap-6'>
-
-
-                    <Text className='font-semibold'>
-                      Excluir disciplina
-                    </Text>
-                  </View>
-
-                </View>
-
-              </TouchableOpacity>
-
-              <ModalComponent title='Excluir atividade' isModalVisible={modalExcluirDisciplina} setModalVisible={setExcluirDisciplina} >
-                <Text>Tem certeza que deseja excluir a atividade?</Text>
-
-                <View className='flex-row gap-4 mt-6'>
-                  <View className='flex-1'>
-                    <Button onPress={() => setExcluirDisciplina(false)} type='secondary'>Cancelar</Button>
-                  </View>
-                  <View className='flex-1'>
-                    <Button type='delete' onPress={async () => {
-
-                      setExcluirDisciplina(false)
-                      try {
-                        // await deleteAtividade(id);
-                        setAtualizacaoDisciplina(!atualizacaoDisciplina)
-
-                        showSuccess("Disciplina excluída com sucesso!");
-                        navigation.goBack();
-                      } catch (error) {
-                        console.error(error);
-                        showError("Não foi possível excluir a disciplina.");
-                      }
-
-                    }} >Confirmar</Button>
-                  </View>
-                </View>
-              </ModalComponent>
-            </View>
-          } />}
-
-          {isOpenTipo && <Sheet title='Horário da disciplina' onClose={toggleSheetHorario} content={
-            <HorarioDisciplina tipoSelected={horario} setTipo={sethoraio} onClose={toggleSheetHorario} />
-          } />}
         </ScrollView>
       </KeyboardAvoidingView>
+
+      {options && <Sheet onClose={() => {
+        setOptions(false)
+      }} title="Opções" content={
+
+        <View className="gap-3">
+          <TouchableOpacity className="flex-row justify-between items-center bg-background rounded-2xl px-6 bg-primary/15 h-14 "
+            onPress={() => {
+              // setTipo(value)
+              setEditar(true)
+              setOptions(false)
+            }}
+          >
+            <View className="flex-row gap-3">
+              <View className='flex-row gap-6'>
+                <Text className='font-semibold'>
+                  Editar disciplina
+                </Text>
+              </View>
+
+            </View>
+
+          </TouchableOpacity>
+
+          <TouchableOpacity className="flex-row justify-between items-center bg-background rounded-2xl px-6 bg-primary/15 h-14 "
+            onPress={() => {
+
+              setExcluirDisciplina(true)
+              // setTipo(value)
+              // close()
+            }}
+          >
+            <View className="flex-row gap-3">
+              <View className='flex-row gap-6'>
+
+
+                <Text className='font-semibold'>
+                  Excluir disciplina
+                </Text>
+              </View>
+
+            </View>
+
+          </TouchableOpacity>
+
+          <ModalComponent title='Excluir disciplina' isModalVisible={modalExcluirDisciplina} setModalVisible={setExcluirDisciplina} >
+            <Text>Tem certeza que deseja excluir a disciplinas?</Text>
+            <Text type='secondary' size='sm'>Todas as atividades vinculadas serão excluídas</Text>
+
+            <View className='flex-row gap-4 mt-6'>
+              <View className='flex-1'>
+                <Button onPress={() => setExcluirDisciplina(false)} type='secondary'>Cancelar</Button>
+              </View>
+              <View className='flex-1'>
+                <Button type='delete' onPress={async () => {
+
+                  setExcluirDisciplina(false)
+                  try {
+                    await deleteDisciplina(id);
+                    setAtualizacaoDisciplina(!atualizacaoDisciplina)
+
+                    showSuccess("Disciplina excluída com sucesso!");
+                    navigation.goBack();
+                  } catch (error) {
+                    console.error(error);
+                    showError("Não foi possível excluir a disciplina.");
+                  }
+
+                }} >Confirmar</Button>
+              </View>
+            </View>
+          </ModalComponent>
+        </View>
+      } />}
+
+      {isOpenTipo && <Sheet title='Horário da disciplina' onClose={toggleSheetHorario} content={
+        <HorarioDisciplina tipoSelected={horario} setTipo={sethoraio} onClose={toggleSheetHorario} />
+      } />}
     </View>
   );
 }

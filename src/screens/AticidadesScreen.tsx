@@ -140,7 +140,7 @@ export function AtividadeScreen() {
 
 
       <FlatList
-        className="flex-1 bg-backgroundLight dark:bg-backgroundDark"
+        className="flex-1 bg-backgroundLight dark:bg-backgroundDark px-4"
         contentContainerStyle={{
           paddingBottom:
             84,

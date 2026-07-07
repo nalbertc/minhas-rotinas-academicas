@@ -138,24 +138,24 @@ export function ProfileScreen() {
 
           </View>
           <View className='border-t border-gray-300 dark:border-gray-700 py-4 gap-1'>
+
             <View>
               <Text size='sm' type='secondary'>Curso</Text>
               <Text>{profile?.curso}</Text>
             </View>
-
-            <View className='flex-row justify-between'>
+            <View className='flex-row justify-between gap-4'>
+              <View>
+                <Text size='sm' type='secondary'>Matricula</Text>
+                <Text>{profile?.matricula}</Text>
+              </View>
               <View>
                 <Text size='sm' type='secondary'>Ano</Text>
                 <Text>{profile?.ano}</Text>
               </View>
 
-              <View>
-                <Text size='sm' type='secondary'>Quant. Disciplinas</Text>
-                <Text>{disciplinas.length}</Text>
-              </View>
             </View>
 
-            <View className='gap-2'>
+            {/* <View className='gap-2'>
               <Text size='sm' type='secondary'>Atividades</Text>
 
               <View className='h-4 rounded-full overflow-hidden flex-row' style={{ width: WIDTH }}>
@@ -194,7 +194,7 @@ export function ProfileScreen() {
                   <Text size='xs' type='secondary'>Concluída</Text>
                 </View>
               </View>
-            </View>
+            </View> */}
 
           </View>
         </View>

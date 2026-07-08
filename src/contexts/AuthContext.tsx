@@ -26,7 +26,7 @@ type AuthContextData = {
   user: User | null;
   session: Session | null;
   profile: Profile | null;
-  loading: boolean;
+  loadingProfile: boolean;
   refresh: boolean,
   setRefresh: React.Dispatch<React.SetStateAction<boolean>>,
   refreshProfile: () => Promise<void>;
@@ -45,12 +45,12 @@ export function AuthProvider({
 
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loadingProfile, setLoading] = useState(true);
   const [refresh, setRefresh] = useState(true);
 
-  async function loadProfile(
-    userId: string
-  ) {
+  async function loadProfile(userId: string) {
+    setLoading(true)
+
     const { data, error } = await supabase
       .from('user')
       .select('*')
@@ -59,13 +59,16 @@ export function AuthProvider({
 
     if (error) {
       console.log(error);
+      setLoading(false)
       return;
     }
 
     setProfile(data);
+    setLoading(false)
   }
 
   async function refreshProfile() {
+
     if (!user) return;
 
     await loadProfile(user.id);
@@ -116,7 +119,7 @@ export function AuthProvider({
         user,
         session,
         profile,
-        loading,
+        loadingProfile,
         refreshProfile,
       }}
     >
@@ -125,5 +128,4 @@ export function AuthProvider({
   );
 }
 
-export const useAuth = () =>
-  useContext(AuthContext);
+export const useAuth = () => useContext(AuthContext);

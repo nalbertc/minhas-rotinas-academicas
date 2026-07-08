@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useEffect, useState } from 'react';
 import { Heading } from '../components/Heading';
+import { Loading } from '../components/Loading';
 import { Text } from '../components/Text';
 import { useProfile } from '../hooks/useprofile';
 import { supabase } from '../libs/supabase';
@@ -29,7 +30,7 @@ export function getInitials(nome?: string) {
 }
 
 export function ProfileScreen() {
-  const { profile } = useProfile()
+  const { profile, loadingProfile } = useProfile()
   const insets = useSafeAreaInsets();
   const { colorScheme, toggleColorScheme } = useColorScheme();
   const navigation = useNavigation()
@@ -100,72 +101,71 @@ export function ProfileScreen() {
       </View>
 
       <View className="px-4">
+        {!loadingProfile ? <>
+          <View className='bg-white dark:bg-cardDark  rounded-2xl px-4 '>
+            <View className='h-28 flex-row items-center justify-between'>
+              <View className='flex-row justify-between gap-2 items-center'>
 
-        <View className='bg-white dark:bg-cardDark  rounded-2xl  px-4 '>
-          <View className='h-28 flex-row items-center justify-between'>
+                <View className='w-16 h-16 overflow-hidden rounded-full '>
 
+                  {profile?.imageUrl ? <Image className="flex-1 " source={{
+                    uri: profile.imageUrl
+                  }} /> : <View className="bg-primary flex-1 items-center justify-center">
+                    <TextComp className="text-white font-regular  text-3xl items-center justify-center">{getInitials(profile?.nome!)}</TextComp>
+                  </View>}
 
-            <View className='flex-row justify-between gap-2 items-center'>
+                </View>
 
-              <View className='w-16 h-16 overflow-hidden rounded-full '>
-
-                {profile?.imageUrl ? <Image className="flex-1 " source={{
-                  uri: profile.imageUrl
-                }} /> : <View className="bg-primary flex-1 items-center justify-center">
-                  <TextComp className="text-white font-regular  text-3xl items-center justify-center">{getInitials(profile?.nome!)}</TextComp>
-                </View>}
-
+                <View>
+                  <Text className='font-semibold' >
+                    {profile?.nome}
+                  </Text>
+                  <Text type='secondary' size='sm' numberOfLines={1}
+                    style={{
+                      flexShrink: 1
+                    }}>
+                    {profile?.email}
+                  </Text>
+                </View>
               </View>
 
-              <View>
-                <Text className='font-semibold' >
-                  {profile?.nome}
-                </Text>
-                <Text type='secondary' size='sm' numberOfLines={1}
-                  style={{
-                    flexShrink: 1
-                  }}>
-                  {profile?.email}
-                </Text>
-              </View>
-            </View>
-
-            <TouchableOpacity className='bg-primary/30 p-3 rounded-full' onPress={() => {
-              navigation.navigate("EditProfile")
-            }} activeOpacity={0.7}>
-              <Pencil color="#7453F9" />
-            </TouchableOpacity>
-
-          </View>
-          <View className='border-t border-gray-300 dark:border-gray-700 py-4 gap-1'>
-
-            <View>
-              <Text size='sm' type='secondary'>Curso</Text>
-              <Text>{profile?.curso}</Text>
-            </View>
-            <View className='flex-row justify-between gap-4'>
-              <View>
-                <Text size='sm' type='secondary'>Matricula</Text>
-                <Text>{profile?.matricula}</Text>
-              </View>
-              <View>
-                <Text size='sm' type='secondary'>Ano</Text>
-                <Text>{profile?.ano}</Text>
-              </View>
+              <TouchableOpacity className='bg-primary/30 p-3 rounded-full' onPress={() => {
+                navigation.navigate("EditProfile")
+              }} activeOpacity={0.7}>
+                <Pencil color="#7453F9" />
+              </TouchableOpacity>
 
             </View>
 
-            {/* <View className='gap-2'>
+            <View className='border-t border-gray-300 dark:border-gray-700 py-4 gap-1'>
+
+              <View>
+                <Text size='sm' type='secondary'>Curso</Text>
+                <Text>{profile?.curso}</Text>
+              </View>
+              <View className='flex-row justify-between gap-4'>
+                <View>
+                  <Text size='sm' type='secondary'>Matricula</Text>
+                  <Text>{profile?.matricula}</Text>
+                </View>
+                <View>
+                  <Text size='sm' type='secondary'>Ano</Text>
+                  <Text>{profile?.ano}</Text>
+                </View>
+
+              </View>
+
+              {/* <View className='gap-2'>
               <Text size='sm' type='secondary'>Atividades</Text>
 
               <View className='h-4 rounded-full overflow-hidden flex-row' style={{ width: WIDTH }}>
-                <View className='h-full bg-atrasada' style={{ width: WIDTH * (atividadesAtrasadas / totalAtividades) }} />
-                <View className='h-full bg-pendente' style={{ width: WIDTH * (atividadesPendentes / totalAtividades) }} />
-                <View className='h-full bg-emAndamento' style={{ width: WIDTH * (atividadesEmAndamento / totalAtividades) }} />
-                <View className='h-full bg-concluida' style={{ width: WIDTH * (atividadesConcluidas / totalAtividades) }} />
+              <View className='h-full bg-atrasada' style={{ width: WIDTH * (atividadesAtrasadas / totalAtividades) }} />
+              <View className='h-full bg-pendente' style={{ width: WIDTH * (atividadesPendentes / totalAtividades) }} />
+              <View className='h-full bg-emAndamento' style={{ width: WIDTH * (atividadesEmAndamento / totalAtividades) }} />
+              <View className='h-full bg-concluida' style={{ width: WIDTH * (atividadesConcluidas / totalAtividades) }} />
               </View>
-            </View>
-            <View className='flex-row justify-between'>
+              </View>
+              <View className='flex-row justify-between'>
 
               <View className=''>
 
@@ -181,8 +181,8 @@ export function ProfileScreen() {
                 </View>
 
 
-              </View>
-              <View>
+                </View>
+                <View>
                 <View className='flex-row gap-2 items-center'>
                   <Text>{atividadesEmAndamento}</Text>
                   <View className='h-4 w-4 bg-emAndamento rounded' />
@@ -196,8 +196,12 @@ export function ProfileScreen() {
               </View>
             </View> */}
 
+            </View>
+
           </View>
-        </View>
+        </> : <>
+          <Loading />
+        </>}
 
       </View>
       <View className='w-full gap-4 px-4'>

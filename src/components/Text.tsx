@@ -22,6 +22,11 @@ export function Text({ children, type = "primary", className, size = "md", ...re
       className)}
       {...rest}
 
+      numberOfLines={1}
+      style={{
+        flexShrink: 1
+      }}
+
     >{children}</TextComponent>
   )
 }

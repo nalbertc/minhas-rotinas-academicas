@@ -10,6 +10,7 @@ import { Loading } from "../components/Loading";
 import { atualizarAtividadesAtrasadas } from "../services/atividades";
 import { Disciplina, getDisciplinas } from "../services/disciplinas";
 import { NavigationProps } from "./AticidadesScreen";
+import { LoadingScreen } from "./LoadingScreen";
 
 export function DisciplinaScreen() {
   const navigation = useNavigation<NavigationProps>();
@@ -33,6 +34,10 @@ export function DisciplinaScreen() {
   useEffect(() => {
     loadData();
   }, []);
+
+  if (loading) {
+    return <LoadingScreen />
+  }
 
   return (
     <View className="flex-1  bg-backgroundLight dark:bg-backgroundDark" style={{ paddingTop: insets.top }}>

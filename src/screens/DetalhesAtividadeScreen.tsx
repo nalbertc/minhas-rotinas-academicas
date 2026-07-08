@@ -109,7 +109,7 @@ export function DetalhesAtividadeScreen() {
         titulo,
         descricao,
         disciplina_id: disciplina.id,
-        data_entrega: formatDateForce(date!),
+        data_entrega: dayjs(date).format("YYYY-MM-DD"),
         prioridade,
         status,
         tipo

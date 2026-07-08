@@ -388,7 +388,7 @@ export function DetalheDisciplinaScreen() {
 
                 <View className='gap-2 mt-4'>
                   <Heading size='sm'>Atividades vinculadas</Heading>
-                  <View className=''>
+                  <View className='gap-3'>
                     {
                       disciplina.atividades.map(atv => (
                         <CardAtividade item={atv} key={atv.id} />

@@ -14,6 +14,7 @@ import { Heading } from "../components/Heading";
 import { Input } from "../components/Input";
 import { STATUS } from "../components/StatusAtividade";
 import { RootStackParamList } from "../navigation/AppNavigator";
+import { LoadingScreen } from "./LoadingScreen";
 
 export type NavigationProps =
   NativeStackNavigationProp<
@@ -74,6 +75,10 @@ export function AtividadeScreen() {
   useEffect(() => {
     loadData();
   }, []);
+
+  if (loading) {
+    return <LoadingScreen />
+  }
 
   return (
 
@@ -151,7 +156,9 @@ export function AtividadeScreen() {
         refreshing={loading}
         onRefresh={loadData}
         renderItem={({ item }) => (
-          <CardAtividade item={item} />
+          <View className="mb-2">
+            <CardAtividade item={item} />
+          </View>
         )}
       />
 

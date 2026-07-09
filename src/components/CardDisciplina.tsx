@@ -1,4 +1,5 @@
 import { useNavigation } from "@react-navigation/native"
+import dayjs from "dayjs"
 import { TouchableOpacity, View } from "react-native"
 import { NavigationProps } from "../screens/AticidadesScreen"
 import { Disciplina } from "../services/disciplinas"
@@ -54,8 +55,8 @@ export function CardDisciplina({ item }: CardDisciplinaProps) {
 
 
           <Text type="secondary" size="sm">
-            {HORARIO.find(hor => hor.value === item.horario)?.title} ({new Date(item.data_inicio).toLocaleDateString('pt-BR')} -
-            {new Date(item.data_fim).toLocaleDateString('pt-BR')})
+            {HORARIO.find(hor => hor.value === item.horario)?.title} ({dayjs(item.data_inicio).format("DD/MM/YYYY")} -
+            {dayjs(item.data_fim).format("DD/MM/YYYY")})
 
           </Text>
         </View>

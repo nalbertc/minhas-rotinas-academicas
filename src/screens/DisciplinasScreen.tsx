@@ -42,7 +42,7 @@ export function DisciplinaScreen() {
   return (
     <View className="flex-1  bg-backgroundLight dark:bg-backgroundDark" style={{ paddingTop: insets.top }}>
 
-      <View className="h-20 w-full items-center justify-center px-4 flex-row">
+      <View className="h-16 w-full items-center justify-center px-4 flex-row">
         <Heading >
           Disciplinas
         </Heading>

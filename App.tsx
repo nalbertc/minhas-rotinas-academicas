@@ -9,6 +9,8 @@ import {
   useFonts,
 } from "@expo-google-fonts/poppins";
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import dayjs from 'dayjs';
+import isBetween from 'dayjs/plugin/isBetween';
 import * as SplashScreen from 'expo-splash-screen';
 import { useColorScheme } from 'nativewind';
 import { useEffect } from 'react';
@@ -19,6 +21,8 @@ import { Toaster } from 'sonner-native';
 import { AuthProvider } from "./src/contexts/AuthContext";
 import { RootNavigator } from "./src/navigation/RootNavigator";
 import { LoadingScreen } from './src/screens/LoadingScreen';
+
+dayjs.extend(isBetween);
 
 SplashScreen.preventAutoHideAsync();
 

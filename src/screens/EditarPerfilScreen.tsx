@@ -209,7 +209,7 @@ export function EditarPerfilScreen({ }: EditPerfilProps) {
     <View className="flex-1  dark:bg-backgroundDark bg-backgroundLight" style={{ paddingTop: insets.top }} >
 
 
-      <View className="h-20 w-full items-center justify-between px-4 flex-row">
+      <View className="h-16 w-full items-center justify-between px-4 flex-row">
         <View className="w-1/6 items-start" >
           <TouchableOpacity className="relative bg-white dark:bg-tabsDark p-2 rounded-lg" activeOpacity={0.7} onPress={() => navigation.goBack()}>
             <ChevronLeft color={colorScheme === "dark" ? "white" : "black"} />
@@ -256,7 +256,7 @@ export function EditarPerfilScreen({ }: EditPerfilProps) {
           </View>
 
           <View className="gap-2">
-            <Text>E-ḿail</Text>
+            <Text>E-mail</Text>
 
             <Input value={profile?.email} editable={false} />
 

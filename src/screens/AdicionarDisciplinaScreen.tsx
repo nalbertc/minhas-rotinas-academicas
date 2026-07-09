@@ -9,16 +9,19 @@ import {
   KeyboardAvoidingView,
   KeyboardAwareScrollView
 } from "react-native-keyboard-controller";
-import MaskInput from "react-native-mask-input";
 import { useSafeAreaInsets, } from 'react-native-safe-area-context';
 import { Button } from "../components/Button";
+import { HORARIO } from '../components/CardDisciplina';
 import { Heading } from "../components/Heading";
 import { HorarioDisciplina } from '../components/HorarioDisciplina';
 import { Input } from "../components/Input";
 import { Sheet } from '../components/Sheet';
 import { Text } from "../components/Text";
 import { createDisciplina } from '../services/disciplinas';
-import { HORARIO } from '../components/CardDisciplina';
+
+import { NavigationProps } from './AticidadesScreen';
+import { formatDatePiker } from './DetalhesAtividadeScreen';
+
 
 export function formatDate(value?: Date) {
   if (!value)
@@ -31,7 +34,7 @@ export function AdicionarDisciplinaScreen() {
   const insets = useSafeAreaInsets();
 
   const { colorScheme, toggleColorScheme } = useColorScheme();
-  const navigation = useNavigation()
+  const navigation = useNavigation<NavigationProps>()
 
   const [nome, setNome] = useState("");
   const [nomeIsValid, setNomeIsValid] = useState(true)
@@ -129,7 +132,9 @@ export function AdicionarDisciplinaScreen() {
             text: "OK",
 
             onPress: () =>
-              navigation.navigate("Disciplina"),
+              navigation.navigate("Tabs", {
+                screen: "Disciplinas"
+              }),
           },
         ]
       );
@@ -202,7 +207,7 @@ export function AdicionarDisciplinaScreen() {
 
           </View>
 
-          <View className="flex-1 px-4 pb-10">
+          <View className="flex-1 px-4 pb-10 gap-6">
             <View className="flex-1 gap-4">
 
               <View className="gap-2" >
@@ -290,21 +295,23 @@ export function AdicionarDisciplinaScreen() {
 
                   {showTimePikerInicio || showTimePikerFim ? (
                     <DateTimePicker
-                      value={new Date()}
+                      value={showTimePikerInicio ? formatDatePiker(dataInicio) : formatDatePiker(dataFim)}
                       mode="date"
                       display="default"
                       onValueChange={(_, selected) => {
                         setShowInicio(false);
                         setShowFim(false);
+
                         if (selected) {
-                          if (showTimePikerInicio)
-                            setDateInicio(selected)
-
-                          if (showTimePikerFim)
+                          if (showTimePikerInicio) {
+                            setDateInicio(selected);
+                          }
+                          if (showTimePikerFim) {
                             setDataFim(selected);
-
+                          }
                         }
-                      }} />
+                      }}
+                    />
                   ) : <></>}
                 </View>
               </View>
@@ -315,15 +322,12 @@ export function AdicionarDisciplinaScreen() {
 
                   <KeyboardAwareScrollView>
 
-                    <MaskInput
+                    <Input
                       value={semestre}
                       onChangeText={setSemestre}
                       placeholder='0000.0'
-                      mask={[/\d/, /\d/, /\d/, /\d/, ".", /[1-4]/,]}
-                      className={clsx(" w-full h-12 rounded-2xl px-4 text-base justify-center border  dark:text-gray-300 text-gray-800", {
-                        "border-red-500 bg-red-50 dark:bg-red-950 ": !semestreIsValid,
-                        "border-gray-300 dark:border-gray-600 dark:bg-[#242331] bg-gray-100 placeholder:text-gray-400": semestreIsValid,
-                      })}
+                      invalid={!semestreIsValid}
+
                     />
                   </KeyboardAwareScrollView>
                 </View>
@@ -351,11 +355,6 @@ export function AdicionarDisciplinaScreen() {
 
                 </View>
               </View>
-
-
-
-
-
             </View>
 
             <Button onPress={() => {

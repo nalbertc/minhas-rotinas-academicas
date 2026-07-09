@@ -34,9 +34,12 @@ export function formatDateForce(value: Date) {
   return `${ano}-${mes}-${dia}`;
 }
 
-export function formatDatePiker(value?: Date) {
+
+export function formatDatePiker(value?: Date | string | null): Date {
   if (!value) return new Date();
-  return new Date(value);
+  const dataInstancia = dayjs(value);
+
+  return dataInstancia.isValid() ? dataInstancia.toDate() : new Date();
 }
 
 export function DetalhesAtividadeScreen() {
@@ -200,7 +203,7 @@ export function DetalhesAtividadeScreen() {
           showsVerticalScrollIndicator={false}
         >
 
-          <View className="h-20 items-center justify-between px-4 flex-row">
+          <View className="h-16 items-center justify-between px-4 flex-row">
             <View className=" items-start" >
               <TouchableOpacity className="relative bg-white dark:bg-tabsDark p-2 rounded-lg" activeOpacity={0.7} onPress={() => {
                 if (editar) {

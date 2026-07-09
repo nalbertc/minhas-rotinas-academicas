@@ -11,7 +11,17 @@ import { DisciplinaScreen } from '../screens/DisciplinasScreen';
 import { HomeScreen } from '../screens/HomeScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 
-const Tab = createBottomTabNavigator();
+
+export type TabParamList = {
+  Inicio: undefined;
+  Disciplinas: undefined;
+  Atividades: undefined;
+  Calendario: undefined;
+  Perfil: undefined
+
+};
+
+const Tab = createBottomTabNavigator<TabParamList>();
 
 export function TabsNavigator() {
 
@@ -78,7 +88,7 @@ export function TabsNavigator() {
         headerShown: false
       }}>
       <Tab.Screen
-        name="Home"
+        name="Inicio"
         component={HomeScreen}
         options={{
           title: "Início",
@@ -86,9 +96,8 @@ export function TabsNavigator() {
         }}
       />
 
-
       <Tab.Screen
-        name="Disciplina"
+        name="Disciplinas"
         component={DisciplinaScreen}
         options={{
           title: "Disciplinas",
@@ -97,7 +106,7 @@ export function TabsNavigator() {
       />
 
       <Tab.Screen
-        name="Atividade"
+        name="Atividades"
         component={AtividadeScreen}
         options={{
           title: "Atividades",
@@ -114,7 +123,7 @@ export function TabsNavigator() {
       />
 
       <Tab.Screen
-        name="Profile"
+        name="Perfil"
         component={ProfileScreen}
         options={({
           title: "Perfil",

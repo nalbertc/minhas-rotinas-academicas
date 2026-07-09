@@ -1,30 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { FlatList, ScrollView, Text as TextReact, TouchableOpacity, View } from 'react-native';
-import {
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
-import { Atividade, atualizarAtividadesAtrasadas, getAtividadess } from "../services/atividades";
-
-import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import clsx from "clsx";
-import { useColorScheme } from "nativewind";
+import React, { useEffect, useState } from "react";
+import { FlatList, ScrollView, Text as TextReact, TouchableOpacity, View } from 'react-native';
+import { useSafeAreaInsets, } from 'react-native-safe-area-context';
+
 import { CardAtividade } from "../components/CardAtividade";
 import { Heading } from "../components/Heading";
 import { Input } from "../components/Input";
 import { STATUS } from "../components/StatusAtividade";
 import { RootStackParamList } from "../navigation/AppNavigator";
+import { Atividade, atualizarAtividadesAtrasadas, getAtividadess } from "../services/atividades";
 import { LoadingScreen } from "./LoadingScreen";
 
-export type NavigationProps =
-  NativeStackNavigationProp<
-    RootStackParamList
-  >;
+export type NavigationProps = NativeStackNavigationProp<RootStackParamList>;
 
 export function AtividadeScreen() {
-  const navigation = useNavigation<NavigationProps>();
   const insets = useSafeAreaInsets();
-  const { colorScheme, toggleColorScheme } = useColorScheme();
 
   const [filterAtividades, setFilterAtividades,] = useState<"pendente" | "em_andamento" | "concluida" | "atrasada" | "">("");
   const [searchAtividades, setSearchAtividades,] = useState("");
@@ -84,7 +75,7 @@ export function AtividadeScreen() {
 
     <View className="flex-1  bg-backgroundLight dark:bg-backgroundDark" style={{ paddingTop: insets.top }}>
 
-      <View className="h-20 items-center justify-center px-4">
+      <View className="h-16 items-center justify-center px-4">
 
         <Heading >
           Atividades
@@ -92,7 +83,7 @@ export function AtividadeScreen() {
 
       </View>
 
-      <View className="gap-4 mb-4">
+      <View className="gap-6 mb-6">
 
         <View className="px-4">
           <Input value={searchAtividades}
@@ -156,7 +147,7 @@ export function AtividadeScreen() {
         refreshing={loading}
         onRefresh={loadData}
         renderItem={({ item }) => (
-          <View className="mb-2">
+          <View className="mb-4">
             <CardAtividade item={item} />
           </View>
         )}

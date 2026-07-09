@@ -1,3 +1,4 @@
+import { NavigatorScreenParams } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 
@@ -8,10 +9,10 @@ import { DetalheDisciplinaScreen } from '../screens/DetalhesDisciplinaScreen';
 import { EditarPerfilScreen } from '../screens/EditarPerfilScreen';
 import { AdicionarMenuScreen } from '../screens/MenuAdicionarScreen';
 import { MenuAtividadeScreen } from '../screens/MenuAtividadeScreen';
-import { TabsNavigator } from './TabsNavigator';
+import { TabParamList, TabsNavigator } from './TabsNavigator';
 
 export type RootStackParamList = {
-  Tabs: undefined;
+  Tabs: NavigatorScreenParams<TabParamList>;
   AddMenu: undefined;
   AtividadeMenu: {
     id: string;
@@ -71,8 +72,6 @@ export function AppNavigator() {
         }}
       />
 
-
-
       <Stack.Screen
         name="AddDisciplina"
         component={AdicionarDisciplinaScreen}
@@ -97,10 +96,6 @@ export function AppNavigator() {
         name="DetalheDisciplina"
         component={DetalheDisciplinaScreen}
       />
-
-
-
-
     </Stack.Navigator>
   )
 }

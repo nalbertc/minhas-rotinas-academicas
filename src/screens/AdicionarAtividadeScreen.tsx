@@ -26,12 +26,6 @@ export function formatDate(value?: Date) {
   return value.toLocaleDateString('pt-BR');
 }
 
-export function formatDatePiker(value: Date) {
-  if (!value)
-    return 'Data';
-
-  return new Date(value);
-}
 
 export function formatDateForce(value: Date) {
   if (!value)

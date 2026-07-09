@@ -5,10 +5,13 @@ import { TouchableOpacity, View, } from 'react-native';
 import { useColorScheme } from 'nativewind';
 import { Heading } from '../components/Heading';
 import { Text } from '../components/Text';
+import { NavigationProps } from './AticidadesScreen';
+
+
 
 export function AdicionarMenuScreen() {
   const { colorScheme, toggleColorScheme } = useColorScheme();
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProps>();
 
   return (
     <View className="flex-1 justify-end bg-black/40">

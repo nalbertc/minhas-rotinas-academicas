@@ -12,6 +12,7 @@ import { useProfile } from '../hooks/useprofile';
 import { supabase } from '../libs/supabase';
 import { Atividade, atualizarAtividadesAtrasadas, getAtividadess } from '../services/atividades';
 import { Disciplina, getDisciplinas } from '../services/disciplinas';
+import { NavigationProps } from './AticidadesScreen';
 
 export function getInitials(nome?: string) {
   if (!nome?.trim()) {
@@ -33,7 +34,7 @@ export function ProfileScreen() {
   const { profile, loadingProfile } = useProfile()
   const insets = useSafeAreaInsets();
   const { colorScheme, toggleColorScheme } = useColorScheme();
-  const navigation = useNavigation()
+  const navigation = useNavigation<NavigationProps>()
 
   const [disciplinas, setDisciplinas] = useState<Disciplina[]>([]);
   const [atividades, setAtividades] = useState<Atividade[]>([]);
@@ -94,7 +95,7 @@ export function ProfileScreen() {
   return (
     <View className="flex-1  dark:bg-backgroundDark bg-backgroundLight" style={{ paddingTop: insets.top }} >
 
-      <View className="h-20 w-full items-center justify-center px-4 flex-row">
+      <View className="h-16 w-full items-center justify-center px-4 flex-row">
         <Heading >
           Meu perfil
         </Heading>

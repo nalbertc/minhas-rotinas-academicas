@@ -1,5 +1,6 @@
 import { RouteProp, useNavigation, useRoute, } from '@react-navigation/native';
 import clsx from 'clsx';
+import dayjs from 'dayjs';
 import { ChevronRight } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
 import { useEffect, useState } from 'react';
@@ -66,7 +67,7 @@ export function MenuAtividadeScreen() {
 
             <View className="flex-row justify-between">
 
-              <Text type="secondary">{new Date(atividade?.data_entrega!).toLocaleDateString()}</Text>
+              <Text type="secondary">{dayjs(atividade?.data_entrega).format("DD/MM/YYYY")}</Text>
 
               <TextReact className={clsx("font-semibold text-lg", {
                 "text-atrasada": atividade?.status === "atrasada",

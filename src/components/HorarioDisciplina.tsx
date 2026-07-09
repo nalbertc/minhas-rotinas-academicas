@@ -2,7 +2,8 @@ import { Check } from "lucide-react-native"
 import { useColorScheme } from "nativewind"
 import { TouchableOpacity, View } from "react-native"
 import { useSharedValue } from "react-native-reanimated"
-import { HORARIO } from "../screens/DisciplinasScreen"
+
+import { HORARIO } from "./CardDisciplina"
 import { Text } from "./Text"
 
 interface TipoAtividadeProps {
@@ -71,13 +72,8 @@ export function TipoAtividades({ title, value, tipoSelected, setTipo, close }: S
 
       </View>
       {
-        tipoSelected === value &&
-
-        <Check color={colorScheme === "dark" ? "#fff" : "#000"} />
+        tipoSelected === value && <Check color={colorScheme === "dark" ? "#fff" : "#000"} />
       }
-
-
-
     </TouchableOpacity>
   )
 }

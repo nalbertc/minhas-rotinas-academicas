@@ -10,7 +10,6 @@ import {
   KeyboardAvoidingView,
   KeyboardAwareScrollView
 } from "react-native-keyboard-controller";
-import MaskInput from "react-native-mask-input";
 import { useSafeAreaInsets, } from 'react-native-safe-area-context';
 
 import { Button } from "../components/Button";
@@ -184,7 +183,7 @@ export function DetalheDisciplinaScreen() {
 
         >
 
-          <View className="h-20 items-center justify-between px-4 flex-row">
+          <View className="h-16 items-center justify-between px-4 flex-row">
 
             <TouchableOpacity className="relative bg-white dark:bg-tabsDark p-2 rounded-lg" activeOpacity={0.7} onPress={() => {
               if (editar) {
@@ -314,21 +313,23 @@ export function DetalheDisciplinaScreen() {
 
                   {showTimePikerInicio || showTimePikerFim ? (
                     <DateTimePicker
-                      value={showTimePikerInicio ? formatDatePiker(dataInicio) : showTimePikerFim ? formatDatePiker(dataFim) : new Date()}
+                      value={showTimePikerInicio ? formatDatePiker(dataInicio) : formatDatePiker(dataFim)}
                       mode="date"
                       display="default"
                       onValueChange={(_, selected) => {
                         setShowInicio(false);
                         setShowFim(false);
+
                         if (selected) {
-                          if (showTimePikerInicio)
-                            setDateInicio(selected)
-
-                          if (showTimePikerFim)
+                          if (showTimePikerInicio) {
+                            setDateInicio(selected);
+                          }
+                          if (showTimePikerFim) {
                             setDataFim(selected);
-
+                          }
                         }
-                      }} />
+                      }}
+                    />
                   ) : <></>}
                 </View>
               </View>
@@ -339,15 +340,11 @@ export function DetalheDisciplinaScreen() {
 
                   <KeyboardAwareScrollView>
 
-                    <MaskInput
+                    <Input
                       value={semestre}
                       onChangeText={setSemestre}
                       placeholder='0000.0'
-                      mask={[/\d/, /\d/, /\d/, /\d/, ".", /[1-4]/,]}
-                      className={clsx(" w-full h-12 rounded-2xl px-4 text-lg justify-center border  dark:text-gray-300 text-gray-800", {
-                        "border-red-500 bg-red-50 dark:bg-red-950 ": !semestreIsValid,
-                        "border-gray-300 dark:border-gray-600 dark:bg-[#242331] bg-gray-100 placeholder:text-gray-400": semestreIsValid,
-                      })}
+                      invalid={!semestreIsValid}
                       editable={editar}
                     />
                   </KeyboardAwareScrollView>
@@ -386,9 +383,9 @@ export function DetalheDisciplinaScreen() {
               {
                 !editar &&
 
-                <View className='gap-2 mt-4'>
+                <View className='gap-4 mt-2'>
                   <Heading size='sm'>Atividades vinculadas</Heading>
-                  <View className='gap-3'>
+                  <View className='gap-4'>
                     {
                       disciplina.atividades.map(atv => (
                         <CardAtividade item={atv} key={atv.id} />

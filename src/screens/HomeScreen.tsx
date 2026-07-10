@@ -1,9 +1,9 @@
 import { useNavigation } from '@react-navigation/native';
 import dayjs from 'dayjs';
-import { Bell, ChevronRight, Plus } from "lucide-react-native";
+import { ChevronRight, Plus } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
 import { useEffect, useMemo, useState } from "react";
-import { Dimensions, Image, RefreshControl, ScrollView, Text as TextComp, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Image, Pressable, RefreshControl, ScrollView, Text as TextComp, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets, } from 'react-native-safe-area-context';
 import { CardAtividade } from '../components/CardAtividade';
 import { HORARIO } from '../components/CardDisciplina';
@@ -15,6 +15,7 @@ import { Disciplina, getDisciplinas } from '../services/disciplinas';
 
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import clsx from 'clsx';
+import { IconTipoAtividade } from '../components/IconTipoAtividade';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { getInitials } from "./ProfileScreen";
 
@@ -50,30 +51,6 @@ export function HomeScreen() {
   }, []);
 
   const hoje = dayjs();
-  const daquiUmaSemana = dayjs().add(7, 'day');
-
-  const proximasEntregas = todasAsAtividades
-    .filter(atv => atv.status !== "concluida" && atv.status !== "atrasada")
-    .sort((a, b) => dayjs(a.data_entrega).diff(dayjs(b.data_entrega)))
-    .slice(0, 3);
-
-  const totalAtividades = todasAsAtividades.length;
-  const concluidas = todasAsAtividades.filter(atv => atv.status === "concluida").length;
-  const pendentes = todasAsAtividades.filter(atv => atv.status === "pendente" || atv.status === "em_andamento").length;
-
-  const atrasadas = todasAsAtividades.filter(atv => atv.status === "atrasada");
-
-  const percentualConclusao = totalAtividades > 0
-    ? Math.round((concluidas / totalAtividades) * 100)
-    : 0;
-
-  const disciplinasAtuais = disciplinas.filter(item => {
-    const inicio = dayjs(item.data_inicio).startOf('day');
-    const fim = dayjs(item.data_fim).endOf('day');
-    return hoje.startOf("day").isBetween(inicio, fim, 'day', '[]');
-  });
-
-  const ultimasDisciplinas = disciplinas
 
   const disciplinasHome = useMemo(() => {
     const LIMITE_CARDS = 5;
@@ -100,7 +77,6 @@ export function HomeScreen() {
     return resultadoCronograma.slice(0, LIMITE_CARDS);
   }, [disciplinas]);
 
-
   const provasProximas = useMemo(() => {
     const limiteDias = hoje.add(14, "day");
     const provasFiltradas = todasAsAtividades.filter((atv) => {
@@ -117,53 +93,158 @@ export function HomeScreen() {
     return provasFiltradas.slice(0, 3);
   }, [todasAsAtividades]);
 
+  const proximasEntregas = useMemo(() => {
+    const hoje = dayjs().startOf("day");
+
+    return todasAsAtividades
+      .filter((atv) => {
+        const dataEntrega = dayjs(atv.data_entrega).startOf("day");
+        return (
+          atv.status !== "concluida" &&
+          (dataEntrega.isSame(hoje) || dataEntrega.isAfter(hoje))
+        );
+      })
+      .sort((a, b) => dayjs(a.data_entrega).diff(dayjs(b.data_entrega)))
+      .slice(0, 3);
+  }, [todasAsAtividades]);
+
+  const atividadesAtrasadas = useMemo(() => {
+    const hoje = dayjs().startOf("day");
+
+    return todasAsAtividades.filter((atv) => {
+      const dataEntrega = dayjs(atv.data_entrega).startOf("day");
+
+      // Pega o que não tá concluído e já venceu
+      return atv.status !== "concluida" && dataEntrega.isBefore(hoje);
+    });
+  }, [todasAsAtividades]);
+
+  const dadosProgresso = useMemo(() => {
+    const concluidas = todasAsAtividades.filter(atv => atv.status === "concluida").length;
+    const total = todasAsAtividades.length;
+
+    const pendentes = todasAsAtividades.filter(
+      (atv) => atv.status === "pendente" || atv.status === "em_andamento"
+    ).length;
+
+    const percentual = total > 0 ? Math.round((concluidas / total) * 100) : 0;
+
+    return { pendentes, percentual };
+  }, [todasAsAtividades]);
 
   const CELL_SIZE = (Dimensions.get("window").width);
 
   return (
-    <>
+    <View className=" bg-backgroundLight dark:bg-backgroundDark relative flex-1">
+
+      <View className='bg-tabsLigth dark:bg-tabsDark' style={{ height: insets.top }} />
+      <View className="h-20 w-full items-center gap-4 px-4 flex-row bg-tabsLigth dark:bg-tabsDark" >
+        <View className="h-14 w-14 rounded-full overflow-hidden">
+          {profile?.imageUrl ? <Image className="flex-1 " source={{
+            uri: profile.imageUrl
+          }} /> : <View className="bg-primary flex-1 items-center justify-center">
+            <TextComp className="text-white font-regular text-3xl items-center justify-center">{getInitials(profile?.nome!)}</TextComp>
+          </View>}
+        </View>
+
+        <View className="flex-row gap-4">
+          <View >
+            <Text type="secondary">Olá!</Text>
+            <Heading size="sm">
+              {profile?.nome}
+            </Heading>
+          </View>
+        </View>
+      </View>
+
       <ScrollView
         refreshControl={
           <RefreshControl
             refreshing={loading}
             onRefresh={loadData}
-          />} className=" bg-backgroundLight dark:bg-backgroundDark relative " style={{ paddingTop: insets.top }} contentContainerStyle={{
-            flexGrow: 1,
+          />} contentContainerStyle={{
+            // flexGrow: 1,
           }}>
-        <View className="h-20 w-full items-center justify-between px-4 flex-row mb-6">
 
-          <View className="flex-row gap-4">
+        <View className="flex-1 relative gap-8 pt-4">
 
-            <View className="h-14 w-14 rounded-full overflow-hidden">
-              {profile?.imageUrl ? <Image className="flex-1 " source={{
-                uri: profile.imageUrl
-              }} /> : <View className="bg-primary flex-1 items-center justify-center">
-                <TextComp className="text-white font-regular text-3xl items-center justify-center">{getInitials(profile?.nome!)}</TextComp>
-              </View>}
+          <Pressable
+            onPress={() => navigation.navigate("Estatisticas")}
+            className="mx-4 p-4 rounded-2xl bg-primary active:opacity-95 gap-2"
+          >
+
+            <View className="flex-row items-center justify-between">
+              <View className="flex-1">
+                <View className='flex-row justify-between'>
+                  <TextComp className="text-xl font-poppins_bold text-white">
+                    {dadosProgresso.percentual}% Concluído
+                  </TextComp>
+                  <ChevronRight color={"white"} />
+                </View>
+
+                <TextComp className="text-[13px] text-gray-300 font-regular">
+                  {dadosProgresso.pendentes === 0
+                    ? "Nenhuma pendência por aqui! 🎉"
+                    : `Resta(m) ${dadosProgresso.pendentes} atividade(s) em aberto`}
+                </TextComp>
+              </View>
             </View>
 
-            <View >
-              <Text type="secondary">Olá!</Text>
-              <Heading size="sm">
-                {profile?.nome}
-              </Heading>
+
+            <View className="w-full">
+              <View className="w-full h-3 bg-white/90  rounded-full overflow-hidden">
+
+                <View
+                  className="h-full bg-concluida"
+                  style={{ width: `${dadosProgresso.percentual}%` }}
+                />
+              </View>
+
+
             </View>
-          </View>
+          </Pressable>
 
-          <TouchableOpacity className="relative bg-white dark:bg-tabsDark p-2 rounded-lg" activeOpacity={0.6} >
-            <Bell color={colorScheme === "dark" ? "white" : "black"} />
-            <View className="absolute bg-red-500 w-3 h-3 rounded-full top-1 right-2" />
-          </TouchableOpacity>
+          {atividadesAtrasadas.length > 0 &&
 
-        </View>
+            <View className='px-4 gap-2'>
+              <Heading size='sm'>Atividades atrasadas</Heading>
 
-        <View className="flex-1 relative gap-6">
+              <View className='gap-2'>
+                {atividadesAtrasadas.map(atv => (
+                  <TouchableOpacity key={atv.id}
+                    className={clsx(`px-4 py-2 rounded-2xl flex-row items-center gap-4 `,
+                      {
+                        "bg-emAndamentoCard dark:bg-emAndamentoCardDark border-emAndamento": atv.status === "em_andamento",
+                        "bg-concluidaCard dark:bg-concluidaCardDark border-concluida": atv.status === "concluida",
+                        "bg-pendenteCard dark:bg-pendenteCardDark border-pendente": atv.status === "pendente",
+                        "bg-atrasadaCard dark:bg-atrasadaCardDark border-atrasada": atv.status === "atrasada",
+                      }
+                    )}
+                    onPress={() => {
+                      navigation.navigate("DetalheAtividade", { id: atv.id })
+                    }}
+                  >
 
-          <View className='bg-primary mx-4 p-4 rounded-2xl'>
-            <Text>r</Text>
-          </View>
+                    <IconTipoAtividade tipo={atv.tipo} color={atv.status === "atrasada" ? "#FF5757" : atv.status === "pendente" ? "#E4B926" : atv.status === "concluida" ? "#34AF68" : "#094BAC"} size={28} />
+
+                    <View className='gap-1 flex-1'>
+                      <Text className='font-semibold'>{atv.titulo}</Text>
+
+                      <View className='flex-row items-center justify-between gap-4 flex-1' >
+                        <Text type='secondary' size='sm'>{atv.disciplina.nome}</Text>
+
+                        <Text type='secondary' >{dayjs(atv.data_entrega).format("DD/MM/YYYY")}</Text>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+
+                ))}
+              </View>
+            </View>
+          }
 
           <View className="gap-2">
+
             <View className='flex-row justify-between px-4'>
               <Heading size='sm' >Disciplinas</Heading>
               <TouchableOpacity className='pl-6' activeOpacity={0.7} onPress={() => navigation.navigate("Tabs", {
@@ -194,8 +275,7 @@ export function HomeScreen() {
                     </Text>
 
                     <Text type="secondary" size="sm">
-                      {HORARIO.find(hor => hor.value === disc.horario)?.title} ({dayjs(disc.data_inicio).format("DD/MM")} -
-                      {dayjs(disc.data_fim).format("DD/MM")})
+                      {HORARIO.find(hor => hor.value === disc.horario)?.title} ({dayjs(disc.data_inicio).format("DD/MM")} - {dayjs(disc.data_fim).format("DD/MM")})
 
                     </Text>
                   </TouchableOpacity>
@@ -205,20 +285,23 @@ export function HomeScreen() {
             </ScrollView>
           </View>
 
+
+
           {
             provasProximas.length > 0 &&
             <View className='px-4 gap-2'>
               <Heading size='sm'>Provas próximas</Heading>
 
+
               <View className='gap-2'>
                 {provasProximas.map(atv => (
 
                   <TouchableOpacity key={atv.id}
-                    className={clsx(`px-4 py-2 rounded-2xl bg-pendenteCard dark:bg-pendenteCardDark border-pendente border`
+                    className={clsx(`px-4 py-2 rounded-2xl bg-pendenteCard dark:bg-pendenteCardDark`
                     )}
 
                     onPress={() => {
-                      navigation.navigate("AtividadeMenu", { id: atv.id })
+                      navigation.navigate("DetalheAtividade", { id: atv.id })
                     }}
                     activeOpacity={0.7}
                   >
@@ -236,31 +319,32 @@ export function HomeScreen() {
           }
 
           <View className='px-4 gap-2'>
-            <Heading size='sm'>Próximas </Heading>
+            <View className='flex-row justify-between'>
+              <Heading size='sm'>Próximas entregas</Heading>
+              <TouchableOpacity className='pl-6' activeOpacity={0.7} onPress={() => navigation.navigate("Tabs", {
+                screen: "Atividades"
+              })}>
+
+                <ChevronRight color={colorScheme === "dark" ? "white" : "black"} />
+              </TouchableOpacity>
+            </View>
 
             <View className='gap-2'>
               {proximasEntregas.map(atv => (
+
                 <CardAtividade key={atv.id} item={atv} />
+
               ))}
             </View>
           </View>
 
-          {atrasadas.length > 0 &&
 
-            <View className='px-4 gap-2'>
-              <Heading size='sm'>Atividades atrasadas</Heading>
 
-              <View className='gap-2'>
-                {atrasadas.map(atv => (
-                  <CardAtividade key={atv.id} item={atv} />
-                ))}
-              </View>
-            </View>
-          }
+
         </View>
 
 
-        <View className='h-60' />
+        <View className='h-48' />
       </ScrollView>
 
       <TouchableOpacity activeOpacity={0.7} className="bg-primary rounded-full p-4 absolute bottom-28 right-6"
@@ -270,8 +354,7 @@ export function HomeScreen() {
       >
         <Plus size={32} color="#fff" />
       </TouchableOpacity>
-    </>
-
+    </View>
   );
 }
 

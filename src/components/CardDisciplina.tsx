@@ -32,7 +32,7 @@ export function CardDisciplina({ item }: CardDisciplinaProps) {
   const navigation = useNavigation<NavigationProps>();
 
   return (
-    <TouchableOpacity className="p-4 dark:bg-cardDark bg-white rounded-xl mb-4" onPress={() => navigation.navigate("DetalheDisciplina", { id: item.id })} activeOpacity={0.7}>
+    <TouchableOpacity className="px-4 py-2 dark:bg-cardDark bg-white rounded-xl mb-4" onPress={() => navigation.navigate("DetalheDisciplina", { id: item.id })} activeOpacity={0.7}>
       <Text
         className="font-semibold"
         numberOfLines={1}
@@ -43,9 +43,8 @@ export function CardDisciplina({ item }: CardDisciplinaProps) {
         {item.nome}
       </Text>
 
-      <View className="flex-row  justify-between gap-5">
-
-        <View className="flex-1 justify-end">
+      <View className="flex-row  justify-between gap-5 items-center">
+        <View className="flex-1 ">
           <Text >Profº {item.professor}</Text>
           <Text size="sm"
             numberOfLines={1}

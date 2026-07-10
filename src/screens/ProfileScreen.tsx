@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import { Heading } from '../components/Heading';
 import { Loading } from '../components/Loading';
 import { Text } from '../components/Text';
+
 import { useProfile } from '../hooks/useprofile';
 import { supabase } from '../libs/supabase';
 import { Atividade, atualizarAtividadesAtrasadas, getAtividadess } from '../services/atividades';
@@ -34,6 +35,8 @@ export function ProfileScreen() {
   const { profile, loadingProfile } = useProfile()
   const insets = useSafeAreaInsets();
   const { colorScheme, toggleColorScheme } = useColorScheme();
+
+
   const navigation = useNavigation<NavigationProps>()
 
   const [disciplinas, setDisciplinas] = useState<Disciplina[]>([]);
@@ -208,11 +211,11 @@ export function ProfileScreen() {
       <View className='w-full gap-4 px-4'>
         <View className='border-t border-gray-300 dark:border-gray-700 py-2 gap-2 mt-4'>
 
-          <TouchableOpacity className='flex-row h-12 items-center gap-4 justify-between'>
+          <TouchableOpacity className='flex-row h-12 items-center gap-4 justify-between' activeOpacity={0.8} onPress={() => navigation.navigate("Estatisticas")}>
             <View className='flex-row gap-4'>
 
               <ChartLine color={colorScheme === "dark" ? "#fff" : "#000"} />
-              <Text className='font-medium'>Dados e estatísiticas</Text>
+              <Text className='font-medium'>Dados e estatísticas</Text>
             </View>
 
             <ChevronRight color={colorScheme === "dark" ? "#fff" : "#000"} />
@@ -225,7 +228,10 @@ export function ProfileScreen() {
               <Text className='font-medium'>Modo escuro</Text>
             </View>
 
-            <Switch value={colorScheme === "dark"} onChange={toggleColorScheme} />
+            <Switch value={colorScheme === "dark"} onValueChange={toggleColorScheme} trackColor={{ true: "rgb(116 83 249 / 0.3)" }}
+              thumbColor={colorScheme === "dark" ? "#7453F9" : "#fff"}
+
+            />
           </View>
 
           <TouchableOpacity className='flex-row  h-12 items-center gap-4' onPress={async () => {

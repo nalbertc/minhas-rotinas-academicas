@@ -5,9 +5,9 @@ import { AppNavigator } from './AppNavigator';
 import { AuthNavigator } from './AuthNavigator';
 
 export function RootNavigator() {
-  const { session, loading } = useAuth();
+  const { session, loadingProfile } = useAuth();
 
-  if (loading) {
+  if (loadingProfile) {
     return null;
   }
 

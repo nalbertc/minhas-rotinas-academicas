@@ -28,7 +28,7 @@ export function TabsNavigator() {
   const CustomTabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
     return (
       <View className="absolute bottom-0 left-0 right-0 ">
-        <View className="flex-row h-24 bg-white dark:bg-tabsDark" style={styles.container}>
+        <View className="flex-row h-24 bg-tabsLigth dark:bg-tabsDark" style={styles.container}>
           {state.routes.map((route, index) => {
             const { options } = descriptors[route.key];
             const label =

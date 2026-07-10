@@ -324,6 +324,7 @@ export function CalendarioScreen() {
                           "border-emAndamento bg-emAndamentoCard dark:bg-emAndamentoCardDark": atv.status === "em_andamento",
                           "border-atrasada bg-atrasadaCard dark:bg-atrasadaCardDark": atv.status === "atrasada",
                         })}
+                        activeOpacity={0.7}
                       >
                         <View className="flex-row items-center gap-3 flex-1">
                           <View className={clsx("w-2 h-2 rounded-full", {
@@ -351,16 +352,20 @@ export function CalendarioScreen() {
                     {itemAgenda.disciplinas.map((disc: Disciplina, index: string) => {
                       const corHex = gerarCorPorTexto(disc.nome);
                       return (
-                        <View
+                        <TouchableOpacity
                           key={`disc-${index}`}
                           className="pl-3 pr-4 py-2 rounded-xl border-l-4 bg-white dark:bg-cardDark flex-col min-h-16"
                           style={{ borderLeftColor: corHex }}
+                          activeOpacity={0.7}
+                          onPress={() => navigation.navigate("DetalheDisciplina", {
+                            id: disc.id
+                          })}
                         >
                           <Text className="font-semibold">{disc.nome}</Text>
                           <Text type="secondary" size="sm">
                             Período: {dayjs(disc.data_inicio).format("DD/MM/YY")} até {dayjs(disc.data_fim).format("DD/MM/YY")}
                           </Text>
-                        </View>
+                        </TouchableOpacity>
                       );
                     })}
                   </View>

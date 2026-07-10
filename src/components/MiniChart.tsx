@@ -10,7 +10,7 @@ interface MiniChartProps {
 export function MiniChart({ current, total }: MiniChartProps) {
 
 
-  const size = 48
+  const size = 44
 
   const strokeWidth = 6
 

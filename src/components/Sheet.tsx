@@ -1,5 +1,3 @@
-// import { Text } from "react-native"
-
 import { useColorScheme } from "nativewind"
 import React, { ReactNode } from "react"
 import { Dimensions, StyleSheet, TouchableWithoutFeedback, View } from "react-native"

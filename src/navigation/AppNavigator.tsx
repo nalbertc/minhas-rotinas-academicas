@@ -7,6 +7,7 @@ import { AdicionarDisciplinaScreen } from '../screens/AdicionarDisciplinaScreen'
 import { DetalhesAtividadeScreen } from '../screens/DetalhesAtividadeScreen';
 import { DetalheDisciplinaScreen } from '../screens/DetalhesDisciplinaScreen';
 import { EditarPerfilScreen } from '../screens/EditarPerfilScreen';
+import { EstatisticasScreen } from '../screens/EstatisticasScreen';
 import { AdicionarMenuScreen } from '../screens/MenuAdicionarScreen';
 import { MenuAtividadeScreen } from '../screens/MenuAtividadeScreen';
 import { TabParamList, TabsNavigator } from './TabsNavigator';
@@ -26,6 +27,7 @@ export type RootStackParamList = {
   DetalheDisciplina: {
     id: string;
   };
+  Estatisticas: undefined
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>()
@@ -95,6 +97,11 @@ export function AppNavigator() {
       <Stack.Screen
         name="DetalheDisciplina"
         component={DetalheDisciplinaScreen}
+      />
+
+      <Stack.Screen
+        name="Estatisticas"
+        component={EstatisticasScreen}
       />
     </Stack.Navigator>
   )

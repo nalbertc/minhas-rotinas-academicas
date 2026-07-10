@@ -1,45 +1,60 @@
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import "./global.css";
-
+import {
+  Inter_400Regular,
+  Inter_500Medium,
+  Inter_600SemiBold,
+  Inter_700Bold,
+  useFonts
+} from '@expo-google-fonts/inter';
 import {
   Poppins_400Regular,
   Poppins_500Medium,
   Poppins_600SemiBold,
   Poppins_700Bold,
-  useFonts,
+  useFonts as usePoppins
 } from "@expo-google-fonts/poppins";
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import * as SplashScreen from 'expo-splash-screen';
 import { useColorScheme } from 'nativewind';
 import { useEffect } from 'react';
 import { StatusBar } from "react-native";
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { PaperProvider } from 'react-native-paper';
 import { Toaster } from 'sonner-native';
+import "./global.css";
 import { AuthProvider } from "./src/contexts/AuthContext";
 import { RootNavigator } from "./src/navigation/RootNavigator";
 import { LoadingScreen } from './src/screens/LoadingScreen';
 
 dayjs.extend(isBetween);
-
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
-  const { colorScheme, toggleColorScheme } = useColorScheme();
-  const [fontsLoaded] = useFonts({
+  const { colorScheme } = useColorScheme();
+  const [fontsLoaded] = usePoppins({
     Poppins_400Regular,
     Poppins_500Medium,
     Poppins_600SemiBold,
     Poppins_700Bold,
   });
 
+  const fontsLoadedS = useFonts({
+    Inter_400Regular,
+    Inter_500Medium,
+    Inter_600SemiBold,
+    Inter_700Bold
+  });
+
   useEffect(() => {
     if (fontsLoaded) {
-      // Esconde o splash screen explicitamente
       SplashScreen.hideAsync();
     }
+
+    if (fontsLoadedS[0]) {
+      SplashScreen.hideAsync();
+    }
+
   }, [fontsLoaded]);
 
   if (!fontsLoaded) {
@@ -47,20 +62,17 @@ export default function App() {
   }
 
   return (
-
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <BottomSheetModalProvider>
-        <KeyboardProvider>
+      <KeyboardProvider>
+        <PaperProvider>
 
+          <AuthProvider>
+            <RootNavigator />
+          </AuthProvider>
 
-          <PaperProvider>
+        </PaperProvider>
+      </KeyboardProvider>
 
-            <AuthProvider>
-              <RootNavigator />
-            </AuthProvider>
-          </PaperProvider>
-        </KeyboardProvider>
-      </BottomSheetModalProvider>
       <StatusBar barStyle={colorScheme === "light" ? "dark-content" : "light-content"} backgroundColor="transparent" translucent />
       <Toaster
         richColors
@@ -71,7 +83,6 @@ export default function App() {
         }
       />
     </GestureHandlerRootView>
-
   );
 }
 

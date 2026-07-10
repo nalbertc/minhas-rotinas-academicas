@@ -57,6 +57,8 @@ export function AuthProvider({
       .eq('id', userId)
       .single();
 
+
+
     if (error) {
       console.log(error);
       setLoading(false)
@@ -79,6 +81,9 @@ export function AuthProvider({
       const {
         data: { session },
       } = await supabase.auth.getSession();
+
+
+
 
       setSession(session);
       setUser(session?.user ?? null);

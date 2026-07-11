@@ -1,19 +1,16 @@
 import { useNavigation } from '@react-navigation/native';
 import { ChartLine, ChevronRight, LogOut, Pencil, SunMoon } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
-import { Dimensions, Image, Switch, Text as TextComp, TouchableOpacity, View } from 'react-native';
+import { Image, Switch, Text as TextComp, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { useEffect, useState } from 'react';
 import { Heading } from '../components/Heading';
 import { Loading } from '../components/Loading';
 import { Text } from '../components/Text';
 
 import { useProfile } from '../hooks/useprofile';
 import { supabase } from '../libs/supabase';
-import { Atividade, atualizarAtividadesAtrasadas, getAtividadess } from '../services/atividades';
-import { Disciplina, getDisciplinas } from '../services/disciplinas';
-import { NavigationProps } from './AticidadesScreen';
+import { NavigationProps } from './AtividadesScreen';
 
 export function getInitials(nome?: string) {
   if (!nome?.trim()) {
@@ -36,64 +33,7 @@ export function ProfileScreen() {
   const insets = useSafeAreaInsets();
   const { colorScheme, toggleColorScheme } = useColorScheme();
 
-
   const navigation = useNavigation<NavigationProps>()
-
-  const [disciplinas, setDisciplinas] = useState<Disciplina[]>([]);
-  const [atividades, setAtividades] = useState<Atividade[]>([]);
-  const [loading, setLoading,] = useState(false);
-
-  async function loadData() {
-    setLoading(true);
-    await atualizarAtividadesAtrasadas()
-
-    const response = await getDisciplinas();
-    const responseAtividades = await getAtividadess();
-
-    setDisciplinas(response);
-    setAtividades(responseAtividades);
-    setLoading(false);
-  }
-
-  useEffect(() => {
-    loadData();
-  }, []);
-
-
-  const totalAtividades =
-    atividades.length;
-
-  const atividadesConcluidas =
-    atividades.filter(
-      atividade =>
-        atividade.status ===
-        "concluida"
-    ).length;
-
-  const atividadesPendentes =
-    atividades.filter(
-      atividade =>
-        atividade.status ===
-        "pendente"
-    ).length;
-
-  const atividadesAtrasadas =
-    atividades.filter(
-      atividade =>
-        atividade.status ===
-        "atrasada"
-    ).length;
-
-  const atividadesEmAndamento =
-    atividades.filter(
-      atividade =>
-        atividade.status ===
-        "em_andamento"
-    ).length;
-
-  const DIMENSIONS = Dimensions.get("window")
-  const WIDTH =
-    DIMENSIONS.width - (4 * 14);
 
   return (
     <View className="flex-1  dark:bg-backgroundDark bg-backgroundLight" style={{ paddingTop: insets.top }} >
@@ -158,47 +98,6 @@ export function ProfileScreen() {
                 </View>
 
               </View>
-
-              {/* <View className='gap-2'>
-              <Text size='sm' type='secondary'>Atividades</Text>
-
-              <View className='h-4 rounded-full overflow-hidden flex-row' style={{ width: WIDTH }}>
-              <View className='h-full bg-atrasada' style={{ width: WIDTH * (atividadesAtrasadas / totalAtividades) }} />
-              <View className='h-full bg-pendente' style={{ width: WIDTH * (atividadesPendentes / totalAtividades) }} />
-              <View className='h-full bg-emAndamento' style={{ width: WIDTH * (atividadesEmAndamento / totalAtividades) }} />
-              <View className='h-full bg-concluida' style={{ width: WIDTH * (atividadesConcluidas / totalAtividades) }} />
-              </View>
-              </View>
-              <View className='flex-row justify-between'>
-
-              <View className=''>
-
-                <View className='flex-row gap-2 items-center'>
-                  <Text>{atividadesAtrasadas}</Text>
-                  <View className='h-4 w-4 bg-atrasada rounded' />
-                  <Text size='xs' type='secondary'>Atrasada</Text>
-                </View>
-                <View className='flex-row gap-2 items-center'>
-                  <Text>{atividadesPendentes}</Text>
-                  <View className='h-4 w-4 bg-pendente rounded' />
-                  <Text size='xs' type='secondary'>Pendente</Text>
-                </View>
-
-
-                </View>
-                <View>
-                <View className='flex-row gap-2 items-center'>
-                  <Text>{atividadesEmAndamento}</Text>
-                  <View className='h-4 w-4 bg-emAndamento rounded' />
-                  <Text size='xs' type='secondary'>Em andamento</Text>
-                </View>
-                <View className='flex-row gap-2 items-center'>
-                  <Text>{atividadesConcluidas}</Text>
-                  <View className='h-4 w-4 bg-concluida rounded' />
-                  <Text size='xs' type='secondary'>Concluída</Text>
-                </View>
-              </View>
-            </View> */}
 
             </View>
 

@@ -24,17 +24,6 @@ import { showError, showInfo, showSuccess } from '../utils/toast';
 import { LoadingScreen } from './LoadingScreen';
 import { RouteProps } from './MenuAtividadeScreen';
 
-export function formatDateForce(value: Date) {
-  if (!value) return new Date().toISOString().split("T")[0];
-
-  const ano = value.getFullYear();
-  const mes = String(value.getMonth() + 1).padStart(2, '0');
-  const dia = String(value.getDate()).padStart(2, '0');
-
-  return `${ano}-${mes}-${dia}`;
-}
-
-
 export function formatDatePiker(value?: Date | string | null): Date {
   if (!value) return new Date();
   const dataInstancia = dayjs(value);
@@ -58,7 +47,6 @@ export function DetalhesAtividadeScreen() {
   const [dateIsValid, setDateIsValid] = useState(true)
   const [prioridade, setPrioridade] = useState<"alta" | "media" | "baixa" | "">("");
   const [prioridadeIsValid, setPrioridadeIsValid] = useState(true)
-  // const [disciplina, setDisciplina] = useState<Disciplina>({} as Disciplina)
   const [disciplinaIsValid, setDisciplinaIsValid] = useState(true)
   const [status, setStatus] = useState<"pendente" | "em_andamento" | "concluida" | "atrasada">("pendente")
 
@@ -205,7 +193,7 @@ export function DetalhesAtividadeScreen() {
 
           <View className="h-16 items-center justify-between px-4 flex-row">
             <View className=" items-start" >
-              <TouchableOpacity className="relative bg-white dark:bg-tabsDark p-2 rounded-lg" activeOpacity={0.7} onPress={() => {
+              <TouchableOpacity className="relative rounded-lg" activeOpacity={0.7} onPress={() => {
                 if (editar) {
                   setEditar(false)
                 } else {
@@ -218,18 +206,16 @@ export function DetalhesAtividadeScreen() {
             </View>
 
             <Heading >
-              {
-                editar ?
-                  "Editar Atividade" : "Atividade"
+              {editar ?
+                "Editar Atividade" : "Atividade"
               }
             </Heading>
 
-            {
-              !editar ?
-                <TouchableOpacity className="relative bg-white dark:bg-tabsDark p-2 rounded-lg" activeOpacity={0.7} onPress={() => setOptions(true)}>
-                  <EllipsisVertical color={colorScheme === "dark" ? "white" : "black"} />
+            {!editar ?
+              <TouchableOpacity className="relative rounded-lg" activeOpacity={0.7} onPress={() => setOptions(true)}>
+                <EllipsisVertical color={colorScheme === "dark" ? "white" : "black"} />
 
-                </TouchableOpacity> : <View />
+              </TouchableOpacity> : <View />
             }
 
           </View>
@@ -302,14 +288,9 @@ export function DetalhesAtividadeScreen() {
                           : 'secondary'
                       }
                     >
-                      {/* {date ? formatDateToDB(date) : "Data"} */}
                       {dayjs(date).format("DD/MM/YYYY")}
-
                     </Text>
-
-                    {
-                      editar &&
-
+                    {editar &&
                       <Calendar
                         size={20} color={colorScheme === "dark" ? "#fff" : "#000"}
                       />

@@ -1,10 +1,11 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
 import clsx from 'clsx';
+import dayjs from 'dayjs';
 import { Calendar, ChevronDown, ChevronLeft } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
 import React, { useState } from "react";
-import { Alert, Dimensions, Platform, ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Platform, ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
 import {
   KeyboardAvoidingView,
   KeyboardAwareScrollView
@@ -18,24 +19,15 @@ import { Input } from "../components/Input";
 import { Sheet } from '../components/Sheet';
 import { Text } from "../components/Text";
 import { createDisciplina } from '../services/disciplinas';
-
-import { NavigationProps } from './AticidadesScreen';
+import { showError, showInfo, showSuccess } from '../utils/toast';
+import { NavigationProps } from './AtividadesScreen';
 import { formatDatePiker } from './DetalhesAtividadeScreen';
-
-
-export function formatDate(value?: Date) {
-  if (!value)
-    return 'Data';
-
-  return value.toLocaleDateString('pt-BR');
-}
 
 export function AdicionarDisciplinaScreen() {
   const insets = useSafeAreaInsets();
 
   const { colorScheme, toggleColorScheme } = useColorScheme();
   const navigation = useNavigation<NavigationProps>()
-
   const [nome, setNome] = useState("");
   const [nomeIsValid, setNomeIsValid] = useState(true)
   const [descricao, setDescricao] = useState("");
@@ -62,7 +54,6 @@ export function AdicionarDisciplinaScreen() {
 
   async function handleCreate() {
     try {
-
       const invalid =
         !nome ||
         !professor ||
@@ -73,40 +64,15 @@ export function AdicionarDisciplinaScreen() {
         !dataFim;
 
       if (invalid) {
+        setNomeIsValid(!!nome);
+        setProfessorIsValid(!!professor);
+        setSalaIsValid(!!sala);
+        setSemestreIsValid(!!semestre);
+        setHorarioIsValid(!!horario);
+        setdataInicioIsValid(!!dataInicio);
+        setdataFimIsValid(!!dataFim);
 
-        setNomeIsValid(
-          !!nome
-        );
-
-        setProfessorIsValid(
-          !!professor
-        );
-
-        setSalaIsValid(
-          !!sala
-        );
-
-        setSemestreIsValid(
-          !!semestre
-        );
-
-        setHorarioIsValid(
-          !!horario
-        );
-
-        setdataInicioIsValid(
-          !!dataInicio
-        );
-
-        setdataFimIsValid(
-          !!dataFim
-        );
-
-        Alert.alert(
-          "Campos obrigatórios",
-          "Preencha todos os campos para continuar."
-        );
-
+        showInfo("Preencha todos os campos para continuar.");
         return;
       }
 
@@ -117,41 +83,20 @@ export function AdicionarDisciplinaScreen() {
         sala,
         semestre,
         horario,
-        data_inicio:
-          dataInicio,
-
-        data_fim:
-          dataFim,
+        data_inicio: dataInicio,
+        data_fim: dataFim,
       });
 
-      Alert.alert(
-        "Sucesso",
-        "Disciplina criada com sucesso!",
-        [
-          {
-            text: "OK",
-
-            onPress: () =>
-              navigation.navigate("Tabs", {
-                screen: "Disciplinas"
-              }),
-          },
-        ]
-      );
+      showSuccess("Disciplina criada com sucesso!")
+      navigation.navigate("Tabs", {
+        screen: "Disciplinas"
+      })
 
     } catch (error) {
-
-      console.log(
-        error
-      );
-
-      Alert.alert(
-        "Erro",
-        "Não foi possível criar a disciplina."
-      );
+      console.log(error);
+      showError("Não foi possível criar a disciplina.");
     }
   }
-
   const DIMENSIONS = Dimensions.get("window")
 
   const width = (DIMENSIONS.width - 48) / 2
@@ -159,41 +104,23 @@ export function AdicionarDisciplinaScreen() {
   return (
     <View className="flex-1 bg-backgroundLight dark:bg-backgroundDark" style={{ paddingTop: insets.top }}>
       <KeyboardAvoidingView
-
         style={{
           flex: 1
         }}
-
-        behavior={
-          Platform.OS ===
-            "ios"
-            ?
-            "padding"
-            :
-            "height"
-        }
-
-        keyboardVerticalOffset={
-          insets.top
-        }
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={insets.top}
       >
         <ScrollView
-
           contentContainerStyle={{
             flexGrow: 1
           }}
-
           keyboardShouldPersistTaps="handled"
-
-          showsVerticalScrollIndicator={
-            false
-          }
-
+          showsVerticalScrollIndicator={false}
         >
 
-          <View className="h-20 items-center justify-between px-4 flex-row">
+          <View className="h-16 items-center justify-between px-4 flex-row">
             <View className="w-1/6 items-start" >
-              <TouchableOpacity className="relative bg-white dark:bg-tabsDark p-2 rounded-lg" activeOpacity={0.7} onPress={() => navigation.goBack()}>
+              <TouchableOpacity className="relative rounded-lg" activeOpacity={0.7} onPress={() => navigation.goBack()}>
                 <ChevronLeft color={colorScheme === "dark" ? "white" : "black"} />
 
               </TouchableOpacity>
@@ -267,7 +194,7 @@ export function AdicionarDisciplinaScreen() {
                     <Text
                       type={dataInicio ? 'primary' : 'secondary'}
                     >
-                      {dataInicio ? formatDate(dataInicio) : "Início"}
+                      {dataInicio ? dayjs(dataInicio).format("DD/MM/YYYY") : "Início"}
                     </Text>
 
                     <Calendar
@@ -285,7 +212,7 @@ export function AdicionarDisciplinaScreen() {
                     <Text
                       type={dataFim ? 'primary' : 'secondary'}
                     >
-                      {dataFim ? formatDate(dataFim) : "Fim"}
+                      {dataFim ? dayjs(dataFim).format("DD/MM/YYYY") : "Fim"}
                     </Text>
 
                     <Calendar

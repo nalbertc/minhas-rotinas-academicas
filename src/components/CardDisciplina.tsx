@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native"
 import dayjs from "dayjs"
 import { TouchableOpacity, View } from "react-native"
-import { NavigationProps } from "../screens/AticidadesScreen"
+import { NavigationProps } from "../screens/AtividadesScreen"
 import { Disciplina } from "../services/disciplinas"
 import { MiniChart } from "./MiniChart"
 import { Text } from "./Text"

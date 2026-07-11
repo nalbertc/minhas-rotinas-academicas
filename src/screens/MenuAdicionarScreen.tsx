@@ -5,7 +5,7 @@ import { TouchableOpacity, View, } from 'react-native';
 import { useColorScheme } from 'nativewind';
 import { Heading } from '../components/Heading';
 import { Text } from '../components/Text';
-import { NavigationProps } from './AticidadesScreen';
+import { NavigationProps } from './AtividadesScreen';
 
 
 

@@ -13,7 +13,7 @@ import { Text } from '../components/Text';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { Atividade, atualizarAtividadesAtrasadas, deleteAtividade, getAtividadeById, updateStatusAtividade } from '../services/atividades';
 import { showError, showSuccess } from '../utils/toast';
-import { NavigationProps } from './AticidadesScreen';
+import { NavigationProps } from './AtividadesScreen';
 
 export type RouteProps = RouteProp<RootStackParamList, 'AtividadeMenu'>;
 

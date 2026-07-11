@@ -1,10 +1,11 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
 import clsx from 'clsx';
+import dayjs from 'dayjs';
 import { Calendar, ChevronDown, ChevronLeft } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
 import React, { useEffect, useState } from "react";
-import { Alert, Dimensions, Platform, ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Platform, ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 import { useSafeAreaInsets, } from 'react-native-safe-area-context';
 import { Button } from "../components/Button";
@@ -18,37 +19,15 @@ import { Text } from "../components/Text";
 import { TipoAtividade, TIPOS } from '../components/TipoAtividade';
 import { createAtividade } from '../services/atividades';
 import { Disciplina, getDisciplinas } from '../services/disciplinas';
-
-export function formatDate(value?: Date) {
-  if (!value)
-    return 'Data';
-
-  return value.toLocaleDateString('pt-BR');
-}
-
-
-export function formatDateForce(value: Date) {
-  if (!value)
-    return new Date().toISOString();
-
-  return value
-    .toISOString()
-    .split("T")[0];
-}
-
-export function formatDateToDB(
-  date: Date
-) {
-  return date
-    .toISOString()
-    .split("T")[0];
-}
+import { showError, showInfo, showSuccess } from '../utils/toast';
+import { NavigationProps } from './AtividadesScreen';
+import { formatDatePiker } from './DetalhesAtividadeScreen';
 
 export function AdicionarAtividadeScreen() {
   const insets = useSafeAreaInsets();
 
-  const { colorScheme, toggleColorScheme } = useColorScheme();
-  const navigation = useNavigation()
+  const { colorScheme } = useColorScheme();
+  const navigation = useNavigation<NavigationProps>()
 
   const [titulo, setTitulo] = useState("");
   const [tituloIsValid, setTituloIsValid] = useState(true)
@@ -104,10 +83,7 @@ export function AdicionarAtividadeScreen() {
         setTipoIsValid(!!tipo);
         setDisciplinaIsValid(!!disciplina?.id);
 
-        Alert.alert(
-          "Campos obrigatórios",
-          "Preencha todos os campos."
-        );
+        showInfo("Campos obrigatórios! Preencha todos os campos.");
 
         return;
       }
@@ -118,31 +94,20 @@ export function AdicionarAtividadeScreen() {
         status,
         prioridade,
         tipo,
-        data_entrega: formatDateForce(date),
+        data_entrega: dayjs(date).format("YYYY-MM-DD"),
         disciplina_id: disciplina.id,
       });
 
-      Alert.alert(
-        "Sucesso",
-        "Atividade criada com sucesso!",
-        [
-          {
-            text:
-              "OK",
-            onPress:
-              () =>
-                navigation.goBack(),
-          },
-        ]
-      );
+      showSuccess("Atividade criada com sucesso!");
+
+      navigation.navigate("Tabs", {
+        screen: 'Atividades'
+      })
 
     } catch (error) {
       console.log("Erro", error);
 
-      Alert.alert(
-        "Erro",
-        "Não foi possível criar a atividade."
-      );
+      showError("Não foi possível criar a atividade.");
     }
   }
 
@@ -191,9 +156,9 @@ export function AdicionarAtividadeScreen() {
           showsVerticalScrollIndicator={false}
         >
 
-          <View className="h-20 items-center justify-between px-4 flex-row">
+          <View className="h-16 items-center justify-between px-4 flex-row">
             <View className="w-1/6 items-start" >
-              <TouchableOpacity className="relative bg-white dark:bg-tabsDark p-2 rounded-lg" activeOpacity={0.7} onPress={() => navigation.goBack()}>
+              <TouchableOpacity className="relative rounded-lg" activeOpacity={0.7} onPress={() => navigation.goBack()}>
                 <ChevronLeft color={colorScheme === "dark" ? "white" : "black"} />
 
               </TouchableOpacity>
@@ -266,7 +231,7 @@ export function AdicionarAtividadeScreen() {
                           : 'secondary'
                       }
                     >
-                      {formatDate(date)}
+                      {dayjs(date).format("DD/MM/YYYY")}
                     </Text>
 
                     <Calendar
@@ -276,7 +241,7 @@ export function AdicionarAtividadeScreen() {
 
                   {showTimePiker && (
                     <DateTimePicker
-                      value={date ?? new Date()}
+                      value={formatDatePiker(date)}
                       mode="date"
                       display="default"
                       onValueChange={(_, selected) => {

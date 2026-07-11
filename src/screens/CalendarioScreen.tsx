@@ -10,33 +10,25 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Heading } from "../components/Heading";
 import { STATUS } from "../components/StatusAtividade";
 import { Text } from "../components/Text";
-import { useProfile } from '../hooks/useprofile';
 import { Atividade, atualizarAtividadesAtrasadas, getAtividadess } from "../services/atividades";
 import { Disciplina, getDisciplinas } from "../services/disciplinas";
 import { gerarCorPorTexto } from "../utils/erarCorPorTexto";
 import { normalizarData } from "../utils/normalizarData";
-import { NavigationProps } from "./AticidadesScreen";
+import { NavigationProps } from "./AtividadesScreen";
 
 dayjs.locale('pt-br');
 
 export function CalendarioScreen() {
-  const { profile } = useProfile();
   const { colorScheme } = useColorScheme();
   const insets = useSafeAreaInsets();
-
   const navigation = useNavigation<NavigationProps>();
-
-  const isDarkMode = colorScheme === 'dark';
-
   const [disciplinas, setDisciplinas] = useState<Disciplina[]>([]);
   const [atividades, setAtividades] = useState<Atividade[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // 🔥 ESTADO 1: Controla qual dia está marcado em foco (Inicia sempre em HOJE)
   const [diaSelecionado, setDiaSelecionado] = useState<string>(dayjs().format("YYYY-MM-DD"));
   const [dataAtual, setDataAtual] = useState(dayjs());
 
-  // 🔥 REFERÊNCIA: Permite rolar a FlatList programaticamente
   const flatListRef = useRef<FlatList>(null);
 
   async function loadData() {
@@ -110,25 +102,21 @@ export function CalendarioScreen() {
       flatListRef.current.scrollToIndex({
         index,
         animated: true,
-        viewPosition: 0, // Alinha o dia no topo da tela de compromissos
+        viewPosition: 0,
       });
     }
   }, [agendaOrdenada]);
 
-  // 🔥 AUTO-FOCUS AO CARREGAR: Executa a rolagem automática para Hoje assim que os dados carregarem
   useEffect(() => {
     if (agendaOrdenada.length > 0 && !loading) {
       const hojeStr = dayjs().format("YYYY-MM-DD");
 
-      // Tenta achar exatamente o dia de hoje na agenda
       let indexAlvo = agendaOrdenada.findIndex(item => item.data === hojeStr);
 
-      // Se hoje não tiver eventos, busca o primeiro evento futuro mais próximo do mês
       if (indexAlvo === -1) {
         indexAlvo = agendaOrdenada.findIndex(item => item.dateObj.isAfter(dayjs(), 'day'));
       }
 
-      // Se mesmo assim não achar nada futuro, foca no primeiríssimo compromisso da lista
       if (indexAlvo === -1) {
         indexAlvo = 0;
       }
@@ -138,7 +126,7 @@ export function CalendarioScreen() {
         setTimeout(() => {
           flatListRef.current?.scrollToIndex({
             index: indexAlvo,
-            animated: false, // Inicial sem animação brusca ao carregar a tela
+            animated: false,
             viewPosition: 0
           });
         }, 150);

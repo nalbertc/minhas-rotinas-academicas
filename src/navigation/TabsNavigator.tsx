@@ -5,12 +5,11 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { BookOpen, Calendar, ClipboardList, Home, User } from 'lucide-react-native';
 
-import { AtividadeScreen } from '../screens/AticidadesScreen';
+import { AtividadeScreen } from '../screens/AtividadesScreen';
 import { CalendarioScreen } from '../screens/CalendarioScreen';
 import { DisciplinaScreen } from '../screens/DisciplinasScreen';
 import { HomeScreen } from '../screens/HomeScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
-
 
 export type TabParamList = {
   Inicio: undefined;
@@ -18,7 +17,6 @@ export type TabParamList = {
   Atividades: undefined;
   Calendario: undefined;
   Perfil: undefined
-
 };
 
 const Tab = createBottomTabNavigator<TabParamList>();

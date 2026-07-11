@@ -68,7 +68,6 @@ export function DetalheDisciplinaScreen() {
 
   async function handleUpdate() {
     try {
-
       const invalid =
         nome === disciplina?.nome &&
         descricao === disciplina.descricao &&
@@ -83,7 +82,6 @@ export function DetalheDisciplinaScreen() {
         showInfo("Altere algum dado para poder editar a atividade")
         return;
       }
-
 
       await updateDisciplina(id, {
         nome,
@@ -109,15 +107,11 @@ export function DetalheDisciplinaScreen() {
 
   const [disciplina, setDisciplina] = useState<Disciplina | null>();
   const [atualizacaoDisciplina, setAtualizacaoDisciplina] = useState(false);
-
   const [modalExcluirDisciplina, setExcluirDisciplina] = useState(false);
 
   async function loadData() {
     setLoading(true);
-
     const response = await getDisciplinaById(id);
-
-
     setDisciplina(response);
     setLoading(false);
   }
@@ -151,41 +145,21 @@ export function DetalheDisciplinaScreen() {
   return (
     <View className="flex-1 bg-backgroundLight dark:bg-backgroundDark" style={{ paddingTop: insets.top }}>
       <KeyboardAvoidingView
-
         style={{
           flex: 1
         }}
-
-        behavior={
-          Platform.OS ===
-            "ios"
-            ?
-            "padding"
-            :
-            "height"
-        }
-
-        keyboardVerticalOffset={
-          insets.top
-        }
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={insets.top}
       >
         <ScrollView
-
           contentContainerStyle={{
             flexGrow: 1
           }}
-
           keyboardShouldPersistTaps="handled"
-
-          showsVerticalScrollIndicator={
-            false
-          }
-
+          showsVerticalScrollIndicator={false}
         >
-
           <View className="h-16 items-center justify-between px-4 flex-row">
-
-            <TouchableOpacity className="relative bg-white dark:bg-tabsDark p-2 rounded-lg" activeOpacity={0.7} onPress={() => {
+            <TouchableOpacity className="relative rounded-lg" activeOpacity={0.7} onPress={() => {
               if (editar) {
                 setEditar(false)
               } else {
@@ -193,22 +167,15 @@ export function DetalheDisciplinaScreen() {
               }
             }}>
               <ChevronLeft color={colorScheme === "dark" ? "white" : "black"} />
-
             </TouchableOpacity>
-
-
             <Heading >
-              {
-                editar ? "Editar disciplina" : "Disciplina"
-              }
-
+              {editar ? "Editar disciplina" : "Disciplina"}
             </Heading>
 
-            {!editar ? <TouchableOpacity className="relative bg-white dark:bg-tabsDark p-2 rounded-lg" activeOpacity={0.7} onPress={() => setOptions(true)}>
+            {!editar ? <TouchableOpacity className="relative rounded-lg" activeOpacity={0.7} onPress={() => setOptions(true)}>
               <EllipsisVertical color={colorScheme === "dark" ? "white" : "black"} />
 
             </TouchableOpacity> : <View />}
-
           </View>
 
           <View className="flex-1 px-4 pb-10 gap-6">

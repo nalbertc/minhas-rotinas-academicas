@@ -5,13 +5,6 @@ import {
   Inter_700Bold,
   useFonts
 } from '@expo-google-fonts/inter';
-import {
-  Poppins_400Regular,
-  Poppins_500Medium,
-  Poppins_600SemiBold,
-  Poppins_700Bold,
-  useFonts as usePoppins
-} from "@expo-google-fonts/poppins";
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import * as SplashScreen from 'expo-splash-screen';
@@ -32,14 +25,9 @@ SplashScreen.preventAutoHideAsync();
 
 export default function App() {
   const { colorScheme } = useColorScheme();
-  const [fontsLoaded] = usePoppins({
-    Poppins_400Regular,
-    Poppins_500Medium,
-    Poppins_600SemiBold,
-    Poppins_700Bold,
-  });
 
-  const fontsLoadedS = useFonts({
+
+  const [fontsLoaded] = useFonts({
     Inter_400Regular,
     Inter_500Medium,
     Inter_600SemiBold,
@@ -48,10 +36,6 @@ export default function App() {
 
   useEffect(() => {
     if (fontsLoaded) {
-      SplashScreen.hideAsync();
-    }
-
-    if (fontsLoadedS[0]) {
       SplashScreen.hideAsync();
     }
 

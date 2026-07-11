@@ -4,6 +4,9 @@ import React, { useEffect, useState } from "react";
 import { FlatList, ScrollView, Text as TextReact, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets, } from 'react-native-safe-area-context';
 
+import { useNavigation } from "@react-navigation/native";
+import { ChevronLeft, Plus } from "lucide-react-native";
+import { useColorScheme } from "nativewind";
 import { CardAtividade } from "../components/CardAtividade";
 import { Heading } from "../components/Heading";
 import { Input } from "../components/Input";
@@ -16,6 +19,8 @@ export type NavigationProps = NativeStackNavigationProp<RootStackParamList>;
 
 export function AtividadeScreen() {
   const insets = useSafeAreaInsets();
+  const { colorScheme } = useColorScheme()
+  const navigation = useNavigation<NavigationProps>()
 
   const [filterAtividades, setFilterAtividades,] = useState<"pendente" | "em_andamento" | "concluida" | "atrasada" | "">("");
   const [searchAtividades, setSearchAtividades,] = useState("");
@@ -48,6 +53,10 @@ export function AtividadeScreen() {
           matchTitulo
         );
       }
+    ).sort(
+      (a, b) =>
+        new Date(a.data_entrega).getTime() -
+        new Date(b.data_entrega).getTime()
     );
 
 
@@ -75,12 +84,18 @@ export function AtividadeScreen() {
 
     <View className="flex-1  bg-backgroundLight dark:bg-backgroundDark" style={{ paddingTop: insets.top }}>
 
-      <View className="h-16 items-center justify-center px-4">
 
+      <View className="h-16 items-center justify-between px-4 flex-row">
+        <TouchableOpacity className="relative rounded-lg" activeOpacity={0.7} onPress={() => navigation.goBack()}>
+          <ChevronLeft color={colorScheme === "dark" ? "white" : "black"} />
+        </TouchableOpacity>
         <Heading >
           Atividades
         </Heading>
 
+        <TouchableOpacity className="relative rounded-lg" activeOpacity={0.7} onPress={() => navigation.navigate("AddAtividade")}>
+          <Plus color={colorScheme === "dark" ? "white" : "black"} />
+        </TouchableOpacity>
       </View>
 
       <View className="gap-6 mb-6">
@@ -133,7 +148,6 @@ export function AtividadeScreen() {
           </View>
         </ScrollView>
       </View>
-
 
       <FlatList
         className="flex-1 bg-backgroundLight dark:bg-backgroundDark px-4"
